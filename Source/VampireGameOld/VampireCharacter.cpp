@@ -30,5 +30,29 @@ void AVampireCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AVampireCharacter::MoveForward);
+	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AVampireCharacter::MoveRight);
+	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AVampireCharacter::LookUp);
+	PlayerInputComponent->BindAxis(TEXT("TurnRight"), this, &AVampireCharacter::TurnRight);
+}
+
+void AVampireCharacter::MoveForward(float AxisValue)
+{
+	AddMovementInput(GetActorForwardVector() * AxisValue);
+}
+
+void AVampireCharacter::MoveRight(float AxisValue)
+{
+	AddMovementInput(GetActorRightVector() * AxisValue);
+}
+
+void AVampireCharacter::LookUp(float AxisValue)
+{
+	AddControllerPitchInput(AxisValue * RotationSpeed * GetWorld()->GetDeltaSeconds());
+}
+
+void AVampireCharacter::TurnRight(float AxisValue)
+{
+	AddControllerYawInput(AxisValue * RotationSpeed * GetWorld()->GetDeltaSeconds());
 }
 
