@@ -2,6 +2,8 @@
 
 
 #include "VampireCharacter.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Animation/AnimInstance.h"
 
 // Sets default values
 AVampireCharacter::AVampireCharacter()
@@ -34,6 +36,9 @@ void AVampireCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AVampireCharacter::MoveRight);
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AVampireCharacter::LookUp);
 	PlayerInputComponent->BindAxis(TEXT("TurnRight"), this, &AVampireCharacter::TurnRight);
+
+	PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Pressed, this, &AVampireCharacter::MeleeAttackButtonDown);
+	PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Released, this, &AVampireCharacter::MeleeAttackButtonUp);
 }
 
 void AVampireCharacter::MoveForward(float AxisValue)
@@ -54,5 +59,27 @@ void AVampireCharacter::LookUp(float AxisValue)
 void AVampireCharacter::TurnRight(float AxisValue)
 {
 	AddControllerYawInput(AxisValue * RotationSpeed * GetWorld()->GetDeltaSeconds());
+}
+
+void AVampireCharacter::MeleeAttackButtonDown()
+{
+	MeleeAttack();
+}
+
+void AVampireCharacter::MeleeAttackButtonUp()
+{
+
+}
+
+void AVampireCharacter::MeleeAttack()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && MeleeMontage)
+	{
+		AnimInstance->Montage_Play(MeleeMontage, 1.25f);
+		AnimInstance->Montage_JumpToSection(FName("Attack_1"), MeleeMontage);
+	}
+
 }
 

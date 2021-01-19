@@ -26,11 +26,18 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
+	class UAnimMontage* MeleeMontage;
+
 private:
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void LookUp(float AxisValue);
 	void TurnRight(float AxisValue);
+
+	void MeleeAttackButtonDown();
+	void MeleeAttackButtonUp();
+	void MeleeAttack();
 
 	UPROPERTY(EditAnywhere)
 	float RotationSpeed = 10.0f;
