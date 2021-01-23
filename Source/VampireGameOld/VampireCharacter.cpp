@@ -11,6 +11,8 @@ AVampireCharacter::AVampireCharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	IsMeleeAttacking = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -43,12 +45,18 @@ void AVampireCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AVampireCharacter::MoveForward(float AxisValue)
 {
-	AddMovementInput(GetActorForwardVector() * AxisValue);
+	if (!IsMeleeAttacking)
+	{
+		AddMovementInput(GetActorForwardVector() * AxisValue);
+	}
 }
 
 void AVampireCharacter::MoveRight(float AxisValue)
 {
-	AddMovementInput(GetActorRightVector() * AxisValue);
+	if (!IsMeleeAttacking)
+	{
+		AddMovementInput(GetActorRightVector() * AxisValue);
+	}
 }
 
 void AVampireCharacter::LookUp(float AxisValue)
@@ -68,11 +76,13 @@ void AVampireCharacter::MeleeAttackButtonDown()
 
 void AVampireCharacter::MeleeAttackButtonUp()
 {
-
+	IsMeleeAttacking = false;
 }
 
 void AVampireCharacter::MeleeAttack()
 {
+	IsMeleeAttacking = true;
+
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
 	if (AnimInstance && MeleeMontage)

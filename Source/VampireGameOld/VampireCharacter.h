@@ -42,4 +42,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	float RotationSpeed = 10.0f;
 
+	bool IsMeleeAttacking;
+
 };
