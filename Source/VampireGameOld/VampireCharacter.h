@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "VampireCharacter.generated.h"
 
+
+class AMeleeWeapon;
+
 UCLASS()
 class VAMPIREGAMEOLD_API AVampireCharacter : public ACharacter
 {
@@ -30,9 +33,16 @@ public:
 	class UAnimMontage* MeleeMontage;
 
 private:
+	// move forward/backward input
 	void MoveForward(float AxisValue);
+
+	// move left/right input
 	void MoveRight(float AxisValue);
+
+	// look up/down input
 	void LookUp(float AxisValue);
+
+	// look right/left input
 	void TurnRight(float AxisValue);
 
 	void MeleeAttackButtonDown();
@@ -44,4 +54,15 @@ private:
 
 	bool IsMeleeAttacking;
 
+	UPROPERTY(EditAnywhere)
+	float  CameraPitchMax = 90.0f;
+	
+   UPROPERTY(EditAnywhere)
+   float  CameraPitchMin = -90.0f;
+
+   UPROPERTY(EditDefaultsOnly)
+      TSubclassOf<AMeleeWeapon> MeleeWeaponClass;
+
+   UPROPERTY()
+      AMeleeWeapon* MeleeWeapon;
 };

@@ -4,6 +4,8 @@
 #include "VampireCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimInstance.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "MeleeWeapon.h"
 
 // Sets default values
 AVampireCharacter::AVampireCharacter()
@@ -13,13 +15,23 @@ AVampireCharacter::AVampireCharacter()
 
 	IsMeleeAttacking = false;
 
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f);
 }
 
 // Called when the game starts or when spawned
 void AVampireCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	MeleeWeapon = GetWorld()->SpawnActor<AMeleeWeapon>(MeleeWeaponClass);
+	MeleeWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+	MeleeWeapon->SetOwner(this);
+
 }
 
 // Called every frame
@@ -45,18 +57,24 @@ void AVampireCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void AVampireCharacter::MoveForward(float AxisValue)
 {
-	if (!IsMeleeAttacking)
-	{
-		AddMovementInput(GetActorForwardVector() * AxisValue);
-	}
+   if (Controller != nullptr && AxisValue != 0.0f)
+   {
+		const FRotator Rotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
+		const FVector MovementDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+
+      AddMovementInput(MovementDirection, AxisValue);
+   }
 }
 
 void AVampireCharacter::MoveRight(float AxisValue)
 {
-	if (!IsMeleeAttacking)
-	{
-		AddMovementInput(GetActorRightVector() * AxisValue);
-	}
+   if (Controller != nullptr && AxisValue != 0.0f)
+   {
+		const FRotator Rotation(0.0f, Controller->GetControlRotation().Yaw, 0.0f);
+		const FVector MovementDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
+
+      AddMovementInput(MovementDirection, AxisValue);
+   }
 }
 
 void AVampireCharacter::LookUp(float AxisValue)
