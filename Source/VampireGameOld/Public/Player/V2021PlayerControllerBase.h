@@ -13,5 +13,5 @@ UCLASS()
 class VAMPIREGAMEOLD_API AV2021PlayerControllerBase : public APlayerController
 {
 	GENERATED_BODY()
-	
+
 };
