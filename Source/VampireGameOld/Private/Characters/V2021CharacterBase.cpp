@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Weapons/WeaponBase.h"
 
 // Sets default values
 AV2021CharacterBase::AV2021CharacterBase()
@@ -84,5 +85,39 @@ void AV2021CharacterBase::TurnRight(float AxisValue)
 void AV2021CharacterBase::LookUp(float AxisValue)
 {
 	AddControllerPitchInput(AxisValue * BaseTurnSpeed * GetWorld()->GetDeltaSeconds());
+}
+
+AWeaponBase* AV2021CharacterBase::GetEquippedWeapon()
+{
+	return EquippedWeapon;
+}
+
+AWeaponBase* AV2021CharacterBase::EquipWeapon(TSubclassOf<AWeaponBase> NewWeapon)
+{
+	if (EquippedWeapon)
+	{
+		UnequipWeapon();
+	}
+
+	FActorSpawnParameters Params;
+	Params.Owner = this;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	EquippedWeapon = GetWorld()->SpawnActor<AWeaponBase>(NewWeapon, Params);
+
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocket);
+		return EquippedWeapon;
+	}
+	return nullptr;
+}
+
+void AV2021CharacterBase::UnequipWeapon()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->OnUnequipped();
+		EquippedWeapon->Destroy();
+	}
 }
 

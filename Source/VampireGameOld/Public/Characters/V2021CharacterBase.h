@@ -8,6 +8,7 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class AWeaponBase;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AV2021CharacterBase : public ACharacter
@@ -46,4 +47,20 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vampire2021")
 	float BaseTurnSpeed = 10.0;
+
+	UFUNCTION(BlueprintPure, Category = "Weapons")
+	AWeaponBase* GetEquippedWeapon();
+
+	UFUNCTION(BlueprintCallable, Category = "Weapons")
+	AWeaponBase* EquipWeapon(TSubclassOf<AWeaponBase> NewWeapon);
+
+	UFUNCTION(BlueprintCallable, Category = "Weapons")
+	void UnequipWeapon();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapons")
+	FName WeaponAttachSocket;
+
+private:
+	AWeaponBase* EquippedWeapon;
+
 };
