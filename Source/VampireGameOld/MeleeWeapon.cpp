@@ -6,6 +6,9 @@
 #include "Components/BoxComponent.h"
 #include "Enemy.h"
 
+#define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
+
+
 // Sets default values
 AMeleeWeapon::AMeleeWeapon()
 {
@@ -17,7 +20,7 @@ AMeleeWeapon::AMeleeWeapon()
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
 
-	WeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponCollision"));
+	WeaponCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("WeaponCollision2"));
 	WeaponCollision->SetupAttachment(GetRootComponent());
 
 	WeaponCollision->OnComponentBeginOverlap.AddDynamic(this, &AMeleeWeapon::OnOverlapBegin);
@@ -46,7 +49,8 @@ void AMeleeWeapon::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AAct
 		AEnemy* Enemy = Cast<AEnemy>(OtherActor);
 		if (Enemy)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hit Enemy"));
+			//UE_LOG(LogTemp, Warning, TEXT("Hit Enemy"));
+			D("Hit by sword")
 		}
 	}
 }

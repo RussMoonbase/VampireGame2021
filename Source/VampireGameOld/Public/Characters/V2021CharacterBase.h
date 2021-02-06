@@ -17,9 +17,6 @@ class VAMPIREGAMEOLD_API AV2021CharacterBase : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* TheCameraComp;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
-	//USkeletalMeshComponent* TheSkeletalMesh;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character", meta = (AllowPrivateAccess = "true"))
 	USpringArmComponent* TheSpringArm;
 
@@ -28,8 +25,6 @@ public:
 	AV2021CharacterBase();
 
 	UCameraComponent* GetCameraComponent() { return TheCameraComp; }
-
-	//USkeletalMeshComponent* GetSkeletalMesh() { return TheSkeletalMesh; }
 
 	USpringArmComponent* GetSpringArm() { return TheSpringArm; }
 
@@ -44,4 +39,11 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	void MoveForward(float AxisValue);
+	void MoveRight(float AxisValue);
+	void TurnRight(float AxisValue);
+	void LookUp(float AxisValue);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vampire2021")
+	float BaseTurnSpeed = 10.0;
 };

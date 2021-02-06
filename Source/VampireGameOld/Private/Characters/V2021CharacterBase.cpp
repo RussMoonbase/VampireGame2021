@@ -4,6 +4,7 @@
 #include "Characters/V2021CharacterBase.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AV2021CharacterBase::AV2021CharacterBase()
@@ -19,10 +20,12 @@ AV2021CharacterBase::AV2021CharacterBase()
 	TheCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	TheCameraComp->SetupAttachment(TheSpringArm, USpringArmComponent::SocketName);
 
-	// Create skeletal mesh
-	//TheSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
-	//TheSkeletalMesh->SetupAttachment(GetRootComponent());
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
 
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0, 540.0, 0.0);
 }
 
 // Called when the game starts or when spawned
@@ -44,5 +47,42 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+   PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AV2021CharacterBase::MoveForward);
+   PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AV2021CharacterBase::MoveRight);
+   PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AV2021CharacterBase::LookUp);
+   PlayerInputComponent->BindAxis(TEXT("TurnRight"), this, &AV2021CharacterBase::TurnRight);
+
+}
+
+void AV2021CharacterBase::MoveForward(float AxisValue)
+{
+	if (Controller != nullptr && AxisValue != 0.0f)
+	{
+		const FRotator Rotation(0.0, Controller->GetControlRotation().Yaw, 0.0);
+		const FVector MovementDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+
+		AddMovementInput(MovementDirection, AxisValue);
+	}
+}
+
+void AV2021CharacterBase::MoveRight(float AxisValue)
+{
+   if (Controller != nullptr && AxisValue != 0.0f)
+   {
+      const FRotator Rotation(0.0, Controller->GetControlRotation().Yaw, 0.0);
+      const FVector MovementDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
+
+      AddMovementInput(MovementDirection, AxisValue);
+   }
+}
+
+void AV2021CharacterBase::TurnRight(float AxisValue)
+{
+	AddControllerYawInput(AxisValue * BaseTurnSpeed * GetWorld()->GetDeltaSeconds());
+}
+
+void AV2021CharacterBase::LookUp(float AxisValue)
+{
+	AddControllerPitchInput(AxisValue * BaseTurnSpeed * GetWorld()->GetDeltaSeconds());
 }
 
