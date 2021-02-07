@@ -6,6 +6,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Weapons/WeaponBase.h"
+#include "Animation/AnimInstance.h"
 
 // Sets default values
 AV2021CharacterBase::AV2021CharacterBase()
@@ -53,6 +54,8 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
    PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &AV2021CharacterBase::LookUp);
    PlayerInputComponent->BindAxis(TEXT("TurnRight"), this, &AV2021CharacterBase::TurnRight);
 
+   PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Pressed, this, &AV2021CharacterBase::MeleeAttackButtonDown);
+   PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Released, this, &AV2021CharacterBase::MeleeAttackButtonUp);
 }
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
@@ -85,6 +88,27 @@ void AV2021CharacterBase::TurnRight(float AxisValue)
 void AV2021CharacterBase::LookUp(float AxisValue)
 {
 	AddControllerPitchInput(AxisValue * BaseTurnSpeed * GetWorld()->GetDeltaSeconds());
+}
+
+void AV2021CharacterBase::MeleeAttackButtonDown()
+{
+	MeleeAttack();
+}
+
+void AV2021CharacterBase::MeleeAttackButtonUp()
+{
+	
+}
+
+void AV2021CharacterBase::MeleeAttack()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && MeleeMontage)
+   {
+      AnimInstance->Montage_Play(MeleeMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("Attack_1"), MeleeMontage);
+   }
 }
 
 AWeaponBase* AV2021CharacterBase::GetEquippedWeapon()

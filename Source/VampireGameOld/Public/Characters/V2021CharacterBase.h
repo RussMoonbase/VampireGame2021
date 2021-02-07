@@ -9,6 +9,7 @@
 class UCameraComponent;
 class USpringArmComponent;
 class AWeaponBase;
+class UAnimMontage;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AV2021CharacterBase : public ACharacter
@@ -44,6 +45,13 @@ public:
 	void MoveRight(float AxisValue);
 	void TurnRight(float AxisValue);
 	void LookUp(float AxisValue);
+   void MeleeAttackButtonDown();
+   void MeleeAttackButtonUp();
+	void MeleeAttack();
+
+
+   UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
+   UAnimMontage* MeleeMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vampire2021")
 	float BaseTurnSpeed = 10.0;
