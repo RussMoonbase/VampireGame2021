@@ -6,6 +6,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Weapons/WeaponBase.h"
+#include "Weapons/MeleeWeaponBase.h"
 #include "Animation/AnimInstance.h"
 
 // Sets default values
@@ -118,10 +119,10 @@ AWeaponBase* AV2021CharacterBase::GetEquippedWeapon()
 
 AWeaponBase* AV2021CharacterBase::EquipWeapon(TSubclassOf<AWeaponBase> NewWeapon)
 {
-	if (EquippedWeapon)
-	{
-		UnequipWeapon();
-	}
+   if (EquippedWeapon)
+   {
+      UnequipWeapon();
+   }
 
 	FActorSpawnParameters Params;
 	Params.Owner = this;
@@ -143,5 +144,39 @@ void AV2021CharacterBase::UnequipWeapon()
 		EquippedWeapon->OnUnequipped();
 		EquippedWeapon->Destroy();
 	}
+}
+
+AMeleeWeaponBase* AV2021CharacterBase::GetEquippedMeleeWeapon()
+{
+   return EquippedMeleeWeapon;
+}
+
+AMeleeWeaponBase* AV2021CharacterBase::EquipMeleeWeapon(TSubclassOf<AMeleeWeaponBase> NewWeapon)
+{
+   if (EquippedMeleeWeapon)
+   {
+      UnequipWeapon();
+   }
+
+   FActorSpawnParameters Params;
+   Params.Owner = this;
+   Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+   EquippedMeleeWeapon = GetWorld()->SpawnActor<AMeleeWeaponBase>(NewWeapon, Params);
+
+   if (EquippedMeleeWeapon)
+   {
+      EquippedMeleeWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocket);
+      return EquippedMeleeWeapon;
+   }
+   return nullptr;
+}
+
+void AV2021CharacterBase::UnequipMeleeWeapon()
+{
+   if (EquippedMeleeWeapon)
+   {
+      EquippedMeleeWeapon->OnUnequipped();
+      EquippedMeleeWeapon->Destroy();
+   }
 }
 

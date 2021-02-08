@@ -12,7 +12,6 @@ AMeleeWeaponBase::AMeleeWeaponBase()
 {
    DamageBox = CreateDefaultSubobject<UBoxComponent>(TEXT("DamageBox"));
    DamageBox->SetupAttachment(GetRootComponent());
-   DamageBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
    //DamageBox->SetCollisionProfileName(TEXT("BlockAllDynamic"));
    DamageBox->SetNotifyRigidBodyCollision(true);
 }
@@ -22,6 +21,7 @@ void AMeleeWeaponBase::BeginPlay()
    Super::BeginPlay();
 
    //DamageBox->OnComponentHit.AddDynamic(this, &AMeleeWeaponBase::OnHit);
+   DamageBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
    DamageBox->OnComponentBeginOverlap.AddDynamic(this, &AMeleeWeaponBase::OnOverlapImpact);
    //DamageBox->OnComponentEndOverlap
 }
@@ -44,6 +44,7 @@ void AMeleeWeaponBase::OnOverlapImpactEnd(UPrimitiveComponent* OverlappedCompone
 
 void AMeleeWeaponBase::TurnOnCollision()
 {
+   D("Turned On Collision");
    DamageBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 }
 

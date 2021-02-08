@@ -9,6 +9,7 @@
 class UCameraComponent;
 class USpringArmComponent;
 class AWeaponBase;
+class AMeleeWeaponBase;
 class UAnimMontage;
 
 UCLASS()
@@ -59,16 +60,27 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Weapons")
 	AWeaponBase* GetEquippedWeapon();
 
-	UFUNCTION(BlueprintCallable, Category = "Weapons")
-	AWeaponBase* EquipWeapon(TSubclassOf<AWeaponBase> NewWeapon);
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   AWeaponBase* EquipWeapon(TSubclassOf<AWeaponBase> NewWeapon);
 
-	UFUNCTION(BlueprintCallable, Category = "Weapons")
-	void UnequipWeapon();
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   void UnequipWeapon();
+
+	UFUNCTION(BlueprintPure, Category = "Weapons")
+	AMeleeWeaponBase* GetEquippedMeleeWeapon();
+
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   AMeleeWeaponBase* EquipMeleeWeapon(TSubclassOf<AMeleeWeaponBase> NewWeapon);
+
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   void UnequipMeleeWeapon();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapons")
 	FName WeaponAttachSocket;
 
 private:
 	AWeaponBase* EquippedWeapon;
+
+	AMeleeWeaponBase* EquippedMeleeWeapon;
 
 };
