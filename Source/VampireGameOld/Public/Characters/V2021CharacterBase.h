@@ -78,9 +78,26 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapons")
 	FName WeaponAttachSocket;
 
+	UFUNCTION(BlueprintCallable, Category = "Weapons")
+	void SetAcceptsAttack2Input(bool booleanValue);
+
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   void SetAcceptsAttack3Input(bool booleanValue);
+
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   void SetAttackEnd(bool booleanValue);
+
 private:
 	AWeaponBase* EquippedWeapon;
 
 	AMeleeWeaponBase* EquippedMeleeWeapon;
+
+	bool bAcceptsAttack3Input;
+
+	bool bAcceptsAttack2Input;
+
+	bool bAttackEnd;
+
+	int AnimMontageMeleeSectionNum;
 
 };

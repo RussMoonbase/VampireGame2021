@@ -36,6 +36,7 @@ void AV2021CharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
+   AnimMontageMeleeSectionNum = 1;
 }
 
 // Called every frame
@@ -98,7 +99,18 @@ void AV2021CharacterBase::MeleeAttackButtonDown()
 
 void AV2021CharacterBase::MeleeAttackButtonUp()
 {
-	
+   //if (bAttackEnd = true)
+   //{
+
+   //}
+   if (AnimMontageMeleeSectionNum == 1)
+   {
+      AnimMontageMeleeSectionNum++;
+   }
+   else if (AnimMontageMeleeSectionNum == 2)
+   {
+      AnimMontageMeleeSectionNum--;
+   }
 }
 
 void AV2021CharacterBase::MeleeAttack()
@@ -107,8 +119,36 @@ void AV2021CharacterBase::MeleeAttack()
 
    if (AnimInstance && MeleeMontage)
    {
-      AnimInstance->Montage_Play(MeleeMontage, 1.25f);
-      AnimInstance->Montage_JumpToSection(FName("Attack_1"), MeleeMontage);
+
+      if (AnimMontageMeleeSectionNum == 1)
+      {
+         AnimInstance->Montage_Play(MeleeMontage, 1.25f);
+         AnimInstance->Montage_JumpToSection(FName("Attack_1"), MeleeMontage);
+
+      }
+      else if (AnimMontageMeleeSectionNum == 2)
+      {
+         AnimInstance->Montage_Play(MeleeMontage, 1.25f);
+         AnimInstance->Montage_JumpToSection(FName("Attack_2"), MeleeMontage);
+      }
+
+      FName CurrentSection = AnimInstance->Montage_GetCurrentSection(MeleeMontage);
+
+      //if (CurrentSection.IsNone())
+      //{
+      //   AnimInstance->Montage_Play(MeleeMontage, 1.25f);
+      //}
+      //else if (CurrentSection.IsEqual("Attack_1") && bAcceptsAttack2Input)
+      //{
+      //   AnimInstance->Montage_JumpToSection(FName("Attack_2"), MeleeMontage);
+      //}
+      //else if (CurrentSection.IsEqual("Attack_2") && bAcceptsAttack3Input)
+      //{
+      //   AnimInstance->Montage_JumpToSection(FName("Attack_3"), MeleeMontage);
+      //}
+
+      //AnimInstance->Montage_Play(MeleeMontage, 1.25f);
+      //AnimInstance->Montage_JumpToSection(FName("Attack_1"), MeleeMontage);
    }
 }
 
@@ -178,5 +218,20 @@ void AV2021CharacterBase::UnequipMeleeWeapon()
       EquippedMeleeWeapon->OnUnequipped();
       EquippedMeleeWeapon->Destroy();
    }
+}
+
+void AV2021CharacterBase::SetAcceptsAttack2Input(bool booleanValue)
+{
+   bAcceptsAttack2Input = booleanValue;
+}
+
+void AV2021CharacterBase::SetAcceptsAttack3Input(bool booleanValue)
+{
+   bAcceptsAttack3Input = booleanValue;
+}
+
+void AV2021CharacterBase::SetAttackEnd(bool booleanValue)
+{
+   bAttackEnd = booleanValue;
 }
 
