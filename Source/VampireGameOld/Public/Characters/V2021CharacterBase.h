@@ -49,6 +49,8 @@ public:
    void MeleeAttackButtonDown();
    void MeleeAttackButtonUp();
 	void MeleeAttack();
+	void PickUpAttackButtonDown();
+	void PickUpAttackButtonUp();
 
 
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
@@ -97,6 +99,8 @@ private:
 	bool bAcceptsAttack2Input;
 
 	bool bAttackEnd;
+
+	bool bIsMeleeAttacking;
 
 	int AnimMontageMeleeSectionNum;
 

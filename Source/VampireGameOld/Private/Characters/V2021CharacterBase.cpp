@@ -8,6 +8,10 @@
 #include "Weapons/WeaponBase.h"
 #include "Weapons/MeleeWeaponBase.h"
 #include "Animation/AnimInstance.h"
+#include "Kismet\KismetSystemLibrary.h"
+#include "DrawDebugHelpers.h"
+
+#define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT(x));}
 
 // Sets default values
 AV2021CharacterBase::AV2021CharacterBase()
@@ -58,11 +62,16 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
    PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Pressed, this, &AV2021CharacterBase::MeleeAttackButtonDown);
    PlayerInputComponent->BindAction(TEXT("MeleeAttack"), IE_Released, this, &AV2021CharacterBase::MeleeAttackButtonUp);
+
+   PlayerInputComponent->BindAction(TEXT("PickUpAttack"), IE_Pressed, this, &AV2021CharacterBase::PickUpAttackButtonDown);
+   PlayerInputComponent->BindAction(TEXT("PickUpAttack"), IE_Released, this, &AV2021CharacterBase::PickUpAttackButtonUp);
+
+
 }
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
 {
-	if (Controller != nullptr && AxisValue != 0.0f)
+	if (Controller != nullptr && AxisValue != 0.0f && !bIsMeleeAttacking)
 	{
 		const FRotator Rotation(0.0, Controller->GetControlRotation().Yaw, 0.0);
 		const FVector MovementDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
@@ -73,7 +82,7 @@ void AV2021CharacterBase::MoveForward(float AxisValue)
 
 void AV2021CharacterBase::MoveRight(float AxisValue)
 {
-   if (Controller != nullptr && AxisValue != 0.0f)
+   if (Controller != nullptr && AxisValue != 0.0f && !bIsMeleeAttacking)
    {
       const FRotator Rotation(0.0, Controller->GetControlRotation().Yaw, 0.0);
       const FVector MovementDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
@@ -115,6 +124,8 @@ void AV2021CharacterBase::MeleeAttackButtonUp()
 
 void AV2021CharacterBase::MeleeAttack()
 {
+   bIsMeleeAttacking = true;
+
    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
    if (AnimInstance && MeleeMontage)
@@ -150,6 +161,34 @@ void AV2021CharacterBase::MeleeAttack()
       //AnimInstance->Montage_Play(MeleeMontage, 1.25f);
       //AnimInstance->Montage_JumpToSection(FName("Attack_1"), MeleeMontage);
    }
+}
+
+void AV2021CharacterBase::PickUpAttackButtonDown()
+{
+   TArray<TEnumAsByte<EObjectTypeQuery>> OVerlappedActorsArray;
+   OVerlappedActorsArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+
+   TArray<AActor*> ignoreThis;
+   ignoreThis.Init(this, 1);
+
+   float radius = 200.0f;
+
+   TArray<AActor*> outActors;
+
+   FVector sphereSpawnLocation = GetActorLocation();
+
+   UKismetSystemLibrary::SphereOverlapActors(GetWorld(), sphereSpawnLocation, radius, OVerlappedActorsArray, AActor::StaticClass(), ignoreThis, outActors);
+   DrawDebugSphere(GetWorld(), GetActorLocation(), radius, 12, FColor::Red, true, 1.0f);
+
+   for (AActor* outActor : outActors)
+   {
+      D("OverlappedActor");
+   }
+}
+
+void AV2021CharacterBase::PickUpAttackButtonUp()
+{
+
 }
 
 AWeaponBase* AV2021CharacterBase::GetEquippedWeapon()
@@ -233,5 +272,7 @@ void AV2021CharacterBase::SetAcceptsAttack3Input(bool booleanValue)
 void AV2021CharacterBase::SetAttackEnd(bool booleanValue)
 {
    bAttackEnd = booleanValue;
+
+   bIsMeleeAttacking = false;
 }
 
