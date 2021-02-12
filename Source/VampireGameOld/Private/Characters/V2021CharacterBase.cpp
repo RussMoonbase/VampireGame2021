@@ -195,7 +195,7 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
          if (TargetLevitatingEnemy)
          {
             D("Target Enemy found");
-            TargetLevitatingEnemy->Levitate();
+            TargetLevitatingEnemy->ActivateLevitate();
          }
          
       }

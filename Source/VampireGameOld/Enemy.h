@@ -30,10 +30,12 @@ public:
 	UCapsuleComponent* CapsuleComp;
 
 	UFUNCTION()
-	void Levitate();
+	void ActivateLevitate();
 
 	bool bIsLevitating;
 	bool bGravity;
+
+	float gameTime;
 
 	ACharacter* PlayerCharacter;
 

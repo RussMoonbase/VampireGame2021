@@ -24,6 +24,7 @@ void AEnemy::BeginPlay()
 	Super::BeginPlay();
 
 	CapsuleComp = GetCapsuleComponent();
+	gameTime = 0.0f;
 
 }
 
@@ -31,6 +32,17 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bIsLevitating)
+	{
+		gameTime = gameTime + DeltaTime;
+
+		FVector NewLocation = GetActorLocation();
+		float newHeight = FMath::Sin(gameTime);
+		float zOffset = 1.0f * newHeight;
+		NewLocation.Z += zOffset;
+		SetActorLocation(NewLocation);
+	}
 
 }
 
@@ -41,7 +53,7 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AEnemy::Levitate()
+void AEnemy::ActivateLevitate()
 {
 	D("Levitate called");
 	if (CapsuleComp)
@@ -50,8 +62,8 @@ void AEnemy::Levitate()
 		CapsuleComp->SetEnableGravity(false);
 		CapsuleComp->SetSimulatePhysics(false);
 		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		FVector NewLocation = GetActorLocation();
-		SetActorLocation(FVector(NewLocation.X, NewLocation.Y, NewLocation.Z + 30.0f));
+		//FVector NewLocation = GetActorLocation();
+		bIsLevitating = true;
 	}
 }
 
