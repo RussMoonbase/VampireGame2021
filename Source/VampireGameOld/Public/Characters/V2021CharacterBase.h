@@ -11,6 +11,7 @@ class USpringArmComponent;
 class AWeaponBase;
 class AMeleeWeaponBase;
 class UAnimMontage;
+class AEnemy;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AV2021CharacterBase : public ACharacter
@@ -104,4 +105,5 @@ private:
 
 	int AnimMontageMeleeSectionNum;
 
+	AEnemy* TargetLevitatingEnemy;
 };

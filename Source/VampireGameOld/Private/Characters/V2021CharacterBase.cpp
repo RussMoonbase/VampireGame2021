@@ -10,8 +10,9 @@
 #include "Animation/AnimInstance.h"
 #include "Kismet\KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
+#include "VampireGameOld/Enemy.h"
 
-#define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Blue, TEXT(x));}
+#define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 
 // Sets default values
 AV2021CharacterBase::AV2021CharacterBase()
@@ -183,6 +184,21 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
    for (AActor* outActor : outActors)
    {
       D("OverlappedActor");
+   }
+
+   if (outActors.Num() > 0)
+   {
+      if (outActors[0])
+      {
+         TargetLevitatingEnemy = Cast<AEnemy>(outActors[0]);
+
+         if (TargetLevitatingEnemy)
+         {
+            D("Target Enemy found");
+            TargetLevitatingEnemy->Levitate();
+         }
+         
+      }
    }
 }
 

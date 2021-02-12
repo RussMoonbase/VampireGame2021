@@ -26,4 +26,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UPROPERTY(EditAnywhere)
+	UCapsuleComponent* CapsuleComp;
+
+	UFUNCTION()
+	void Levitate();
+
+	bool bIsLevitating;
+	bool bGravity;
+
+	ACharacter* PlayerCharacter;
+
 };
