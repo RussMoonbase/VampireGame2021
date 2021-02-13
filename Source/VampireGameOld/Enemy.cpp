@@ -14,8 +14,8 @@ AEnemy::AEnemy()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-
-
+	Dimensions = FVector(100, 0, 0);
+	AxisVector = FVector(0, 0, 1);
 }
 
 // Called when the game starts or when spawned
@@ -33,15 +33,14 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bStartFloating)
+	{
+		FloatEnemy(DeltaTime);
+	}
+
 	if (bIsLevitating)
 	{
-		gameTime = gameTime + DeltaTime;
-
-		FVector NewLocation = GetActorLocation();
-		float newHeight = FMath::Sin(gameTime);
-		float zOffset = 1.0f * newHeight;
-		NewLocation.Z += zOffset;
-		SetActorLocation(NewLocation);
+		Levitate(DeltaTime);
 	}
 
 }
@@ -62,8 +61,65 @@ void AEnemy::ActivateLevitate()
 		CapsuleComp->SetEnableGravity(false);
 		CapsuleComp->SetSimulatePhysics(false);
 		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		//FVector NewLocation = GetActorLocation();
-		bIsLevitating = true;
+		FVector OriginalLocation = GetActorLocation();
+		OrginalZLocationBeforeLevitate = OriginalLocation.Z;
+		bStartFloating = true;
 	}
+}
+
+void AEnemy::FloatEnemy(float DeltaTime)
+{
+	FVector NewLocation = GetActorLocation();
+
+	if (NewLocation.Z < OrginalZLocationBeforeLevitate + 45.0f)
+	{
+		NewLocation.Z += 10.0f * DeltaTime;
+      SetActorLocation(NewLocation);
+	}
+	else
+	{
+		bStartFloating = false;
+		bIsLevitating = true;
+		FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+		float XValue = GetActorLocation().X - PlayerLocation.X;
+      float YValue = GetActorLocation().Y - PlayerLocation.Y;
+		Dimensions = FVector(XValue, YValue, 0);
+	}
+
+}
+
+void AEnemy::Levitate(float DeltaTime)
+{
+   gameTime = gameTime + DeltaTime;
+
+   //FVector NewLocation = GetActorLocation();
+   //float newHeight = FMath::Sin(gameTime);
+   //float zOffset = 1.0f * newHeight;
+   //NewLocation.Z += zOffset;
+	//SetActorLocation(NewLocation);
+
+	FVector TheLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	AngleAxis += DeltaTime * 5.0f;
+
+	if (AngleAxis >= 360.0f)
+	{
+		AngleAxis = 0;
+	}
+
+	FVector RotateValue = Dimensions;
+
+	TheLocation.X += RotateValue.X;
+	TheLocation.Y += RotateValue.Y;
+	//FVector NewLocation = GetActorLocation();
+	FVector NewLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+	NewLocation.Z += 45.0f;
+
+   float newHeight = FMath::Sin(gameTime);
+	float zOffset = 20.0f * newHeight;
+	//UE_LOG(LogTemp, Warning, TEXT("%f"),zOffset);
+	NewLocation.Z += zOffset;
+	TheLocation.Z = NewLocation.Z;
+
+   SetActorLocation(TheLocation, false, 0, ETeleportType::None);
 }
 

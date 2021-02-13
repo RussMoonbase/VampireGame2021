@@ -33,10 +33,24 @@ public:
 	void ActivateLevitate();
 
 	bool bIsLevitating;
+	bool bStartFloating;
 	bool bGravity;
 
 	float gameTime;
 
 	ACharacter* PlayerCharacter;
+
+private:
+	void FloatEnemy(float DeltaTime);
+
+	void Levitate(float DeltaTime);
+
+	float OrginalZLocationBeforeLevitate;
+
+	float AngleAxis;
+
+	FVector AxisVector;
+
+	FVector Dimensions;
 
 };
