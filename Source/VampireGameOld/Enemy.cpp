@@ -67,6 +67,15 @@ void AEnemy::ActivateLevitate()
 	}
 }
 
+void AEnemy::FlingDownedEnemy(FVector ForwardVector)
+{
+	bIsLevitating = false;
+   CapsuleComp->SetEnableGravity(true);
+   CapsuleComp->SetSimulatePhysics(true);
+	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CapsuleComp->AddForce(ForwardVector * 100000 * CapsuleComp->GetMass());
+}
+
 void AEnemy::FloatEnemy(float DeltaTime)
 {
 	FVector NewLocation = GetActorLocation();

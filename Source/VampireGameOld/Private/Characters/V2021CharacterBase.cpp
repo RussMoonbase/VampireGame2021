@@ -67,6 +67,7 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
    PlayerInputComponent->BindAction(TEXT("PickUpAttack"), IE_Pressed, this, &AV2021CharacterBase::PickUpAttackButtonDown);
    PlayerInputComponent->BindAction(TEXT("PickUpAttack"), IE_Released, this, &AV2021CharacterBase::PickUpAttackButtonUp);
 
+   PlayerInputComponent->BindAction(TEXT("FlingAttack"), IE_Pressed, this, &AV2021CharacterBase::FlingAttackButtonDown);
 
 }
 
@@ -205,6 +206,15 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
 void AV2021CharacterBase::PickUpAttackButtonUp()
 {
 
+}
+
+void AV2021CharacterBase::FlingAttackButtonDown()
+{
+   if (TargetLevitatingEnemy)
+   {
+      FVector PlayerForwardVector = GetActorForwardVector();
+      TargetLevitatingEnemy->FlingDownedEnemy(PlayerForwardVector);
+   }
 }
 
 AWeaponBase* AV2021CharacterBase::GetEquippedWeapon()

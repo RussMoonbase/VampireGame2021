@@ -32,6 +32,9 @@ public:
 	UFUNCTION()
 	void ActivateLevitate();
 
+	UFUNCTION()
+	void FlingDownedEnemy(FVector ForwardVector);
+
 	bool bIsLevitating;
 	bool bStartFloating;
 	bool bGravity;

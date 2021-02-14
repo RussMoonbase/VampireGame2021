@@ -52,6 +52,7 @@ public:
 	void MeleeAttack();
 	void PickUpAttackButtonDown();
 	void PickUpAttackButtonUp();
+	void FlingAttackButtonDown();
 
 
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
