@@ -58,6 +58,9 @@ public:
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
    UAnimMontage* MeleeMontage;
 
+   UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
+   UAnimMontage* PickUpMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vampire2021")
 	float BaseTurnSpeed = 10.0;
 
@@ -107,4 +110,6 @@ private:
 	int AnimMontageMeleeSectionNum;
 
 	AEnemy* TargetLevitatingEnemy;
+
+	TArray<AEnemy*> TargetPickUpEnemies;
 };

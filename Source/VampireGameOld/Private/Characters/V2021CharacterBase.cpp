@@ -145,7 +145,7 @@ void AV2021CharacterBase::MeleeAttack()
          AnimInstance->Montage_JumpToSection(FName("Attack_2"), MeleeMontage);
       }
 
-      FName CurrentSection = AnimInstance->Montage_GetCurrentSection(MeleeMontage);
+      //FName CurrentSection = AnimInstance->Montage_GetCurrentSection(MeleeMontage);
 
       //if (CurrentSection.IsNone())
       //{
@@ -184,23 +184,58 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
 
    for (AActor* outActor : outActors)
    {
-      D("OverlappedActor");
+      D("Overlapped Actor");
+      TargetPickUpEnemies.Add(Cast<AEnemy>(outActor));
    }
 
-   if (outActors.Num() > 0)
+   for (AEnemy* targetPickUpEnemy : TargetPickUpEnemies)
    {
-      if (outActors[0])
+      if (targetPickUpEnemy)
       {
-         TargetLevitatingEnemy = Cast<AEnemy>(outActors[0]);
-
-         if (TargetLevitatingEnemy)
-         {
-            D("Target Enemy found");
-            TargetLevitatingEnemy->ActivateLevitate();
-         }
-         
+         targetPickUpEnemy->ActivateLevitate();
       }
    }
+
+
+   //if (outActors.Num() > 0)
+   //{
+   //   for (int i = 0; i < outActors.Num() - 1; i++)
+   //   {
+   //      D("Overlapped Actor");
+   //      TargetPickUpEnemies[i] = Cast<AEnemy>(outActors[i]);
+
+   //      if (TargetPickUpEnemies[i])
+   //      {
+   //         TargetPickUpEnemies[i]->ActivateLevitate();
+   //      }
+   //   }
+   //}
+
+
+   //if (outActors.Num() > 0)
+   //{
+   //   if (outActors[0])
+   //   {
+   //      TargetLevitatingEnemy = Cast<AEnemy>(outActors[0]);
+
+   //      if (TargetLevitatingEnemy)
+   //      {
+   //         D("Target Enemy found");
+
+   //         TargetLevitatingEnemy->ActivateLevitate();
+   //      }
+   //      
+   //   }
+   //}
+
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && PickUpMontage)
+   {
+      AnimInstance->Montage_Play(PickUpMontage, 0.85f);
+      AnimInstance->Montage_JumpToSection(FName("CastSpell"), PickUpMontage);
+   }
+
 }
 
 void AV2021CharacterBase::PickUpAttackButtonUp()
@@ -210,11 +245,33 @@ void AV2021CharacterBase::PickUpAttackButtonUp()
 
 void AV2021CharacterBase::FlingAttackButtonDown()
 {
-   if (TargetLevitatingEnemy)
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && PickUpMontage)
    {
-      FVector PlayerForwardVector = GetActorForwardVector();
-      TargetLevitatingEnemy->FlingDownedEnemy(PlayerForwardVector);
+      AnimInstance->Montage_Play(PickUpMontage, 0.85f);
+      AnimInstance->Montage_JumpToSection(FName("Throw"), PickUpMontage);
    }
+
+   FVector PlayerForwardVector = GetActorForwardVector();
+
+   if (TargetPickUpEnemies.Num() > 0)
+   {
+      int i = TargetPickUpEnemies.Num() - 1;
+      UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
+
+      if (TargetPickUpEnemies[i])
+      {
+         TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
+         TargetPickUpEnemies.RemoveAt(i);
+      }
+   }
+
+   //if (TargetLevitatingEnemy)
+   //{
+
+   //   TargetLevitatingEnemy->FlingDownedEnemy(PlayerForwardVector);
+   //}
 }
 
 AWeaponBase* AV2021CharacterBase::GetEquippedWeapon()
