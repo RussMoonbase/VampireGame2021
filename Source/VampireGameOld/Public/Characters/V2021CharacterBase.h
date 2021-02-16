@@ -10,6 +10,7 @@ class UCameraComponent;
 class USpringArmComponent;
 class AWeaponBase;
 class AMeleeWeaponBase;
+class AFingerGun;
 class UAnimMontage;
 class AEnemy;
 
@@ -65,10 +66,10 @@ public:
 	float BaseTurnSpeed = 10.0;
 
 	UFUNCTION(BlueprintPure, Category = "Weapons")
-	AWeaponBase* GetEquippedWeapon();
+	AFingerGun* GetEquippedWeapon();
 
    UFUNCTION(BlueprintCallable, Category = "Weapons")
-   AWeaponBase* EquipWeapon(TSubclassOf<AWeaponBase> NewWeapon);
+   AFingerGun* EquipWeapon(TSubclassOf<AFingerGun> NewWeapon);
 
    UFUNCTION(BlueprintCallable, Category = "Weapons")
    void UnequipWeapon();
@@ -95,7 +96,7 @@ public:
    void SetAttackEnd(bool booleanValue);
 
 private:
-	AWeaponBase* EquippedWeapon;
+	AFingerGun* EquippedFingerGun;
 
 	AMeleeWeaponBase* EquippedMeleeWeapon;
 

@@ -11,6 +11,7 @@
 #include "Kismet\KismetSystemLibrary.h"
 #include "DrawDebugHelpers.h"
 #include "VampireGameOld/Enemy.h"
+#include "Weapons/FingerGun.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 
@@ -274,14 +275,14 @@ void AV2021CharacterBase::FlingAttackButtonDown()
    //}
 }
 
-AWeaponBase* AV2021CharacterBase::GetEquippedWeapon()
+AFingerGun* AV2021CharacterBase::GetEquippedWeapon()
 {
-	return EquippedWeapon;
+	return EquippedFingerGun;
 }
 
-AWeaponBase* AV2021CharacterBase::EquipWeapon(TSubclassOf<AWeaponBase> NewWeapon)
+AFingerGun* AV2021CharacterBase::EquipWeapon(TSubclassOf<AFingerGun> NewWeapon)
 {
-   if (EquippedWeapon)
+   if (EquippedFingerGun)
    {
       UnequipWeapon();
    }
@@ -289,22 +290,22 @@ AWeaponBase* AV2021CharacterBase::EquipWeapon(TSubclassOf<AWeaponBase> NewWeapon
 	FActorSpawnParameters Params;
 	Params.Owner = this;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	EquippedWeapon = GetWorld()->SpawnActor<AWeaponBase>(NewWeapon, Params);
+	EquippedFingerGun = GetWorld()->SpawnActor<AFingerGun>(NewWeapon, Params);
 
-	if (EquippedWeapon)
+	if (EquippedFingerGun)
 	{
-		EquippedWeapon->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocket);
-		return EquippedWeapon;
+		EquippedFingerGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, WeaponAttachSocket);
+		return EquippedFingerGun;
 	}
 	return nullptr;
 }
 
 void AV2021CharacterBase::UnequipWeapon()
 {
-	if (EquippedWeapon)
+	if (EquippedFingerGun)
 	{
-		EquippedWeapon->OnUnequipped();
-		EquippedWeapon->Destroy();
+		EquippedFingerGun->OnUnequipped();
+		EquippedFingerGun->Destroy();
 	}
 }
 
