@@ -60,7 +60,7 @@ void AFingerGun::StartShooting_Implementation()
 		return;
 	}
 
-	FireGhostBullet();
+	//FireGhostBullet();
 }
 
 void AFingerGun::StopShooting_Implementation()
@@ -77,4 +77,5 @@ void AFingerGun::StartFiring()
 
    FireGhostBullet();
 }
+
 

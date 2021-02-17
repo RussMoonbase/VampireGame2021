@@ -28,6 +28,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet")
 	USphereComponent* DamageSphere;
 
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Bullet")
+   float Damage;
+
+   UFUNCTION()
+   void OnOverlapImpact(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Bullet")
+	void OnImpact(const FHitResult& Hit);
 
 protected:
 	// Called when the game starts or when spawned

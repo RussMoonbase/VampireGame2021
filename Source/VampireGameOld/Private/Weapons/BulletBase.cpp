@@ -5,6 +5,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
+
+#define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
 // Sets default values
 ABulletBase::ABulletBase()
@@ -15,6 +19,7 @@ ABulletBase::ABulletBase()
    DamageSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DamageSphere"));
    SetRootComponent(DamageSphere);
    DamageSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
 	MeshComp->SetupAttachment(DamageSphere);
@@ -39,6 +44,8 @@ ABulletBase::ABulletBase()
 void ABulletBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	DamageSphere->OnComponentBeginOverlap.AddDynamic(this, &ABulletBase::OnOverlapImpact);
 	
 }
 
@@ -47,5 +54,18 @@ void ABulletBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABulletBase::OnOverlapImpact(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+   if (!OtherActor)
+   {
+      return;
+   }
+
+   D("Hit by bullet!");
+   UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, GetOwner(), UDamageType::StaticClass());
+
+	OnImpact(SweepResult);
 }
 
