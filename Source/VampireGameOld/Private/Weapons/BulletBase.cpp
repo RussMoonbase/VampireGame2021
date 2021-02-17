@@ -2,12 +2,36 @@
 
 
 #include "Weapons/BulletBase.h"
+#include "Components/StaticMeshComponent.h"
+#include "GameFramework/ProjectileMovementComponent.h"
+#include "Components/SphereComponent.h"
 
 // Sets default values
 ABulletBase::ABulletBase()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+   DamageSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DamageSphere"));
+   SetRootComponent(DamageSphere);
+   DamageSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MeshComp"));
+	MeshComp->SetupAttachment(DamageSphere);
+	
+	if (GetOwner())
+	{
+		MeshComp->IgnoreActorWhenMoving(GetOwner(), true);
+	}
+	
+	if (GetOwner() && GetOwner()->GetOwner())
+	{
+		MeshComp->IgnoreActorWhenMoving(GetOwner()->GetOwner(), true);
+	}
+
+	ProjecticleMoveComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMove"));
+	ProjecticleMoveComp->InitialSpeed = 3000;
+	ProjecticleMoveComp->Velocity = FVector(1.0f, 0.0f, 0.0f);
 
 }
 

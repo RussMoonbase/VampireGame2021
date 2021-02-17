@@ -6,6 +6,10 @@
 #include "GameFramework/Actor.h"
 #include "BulletBase.generated.h"
 
+class UStaticMeshComponent;
+class UProjectileMovementComponent;
+class USphereComponent;
+
 UCLASS()
 class VAMPIREGAMEOLD_API ABulletBase : public AActor
 {
@@ -14,6 +18,16 @@ class VAMPIREGAMEOLD_API ABulletBase : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ABulletBase();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet")
+	UStaticMeshComponent* MeshComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet")
+	UProjectileMovementComponent* ProjecticleMoveComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet")
+	USphereComponent* DamageSphere;
+
 
 protected:
 	// Called when the game starts or when spawned

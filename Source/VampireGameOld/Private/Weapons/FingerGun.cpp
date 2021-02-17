@@ -36,6 +36,23 @@ void AFingerGun::Tick(float DeltaTime)
 
 }
 
+void AFingerGun::FireGhostBullet_Implementation()
+{
+   if (CurrentAmmo > 0)
+   {
+      CurrentAmmo--;
+
+      //AActor* BulletOwner = GetOwner() ? GetOwner() : this;
+      const FTransform SpawnTransform = GunMuzzleArrow->GetComponentTransform();
+
+      FActorSpawnParameters Params;
+      Params.Owner = GetOwner();
+      Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+      GetWorld()->SpawnActor<AActor>(Bullet, SpawnTransform, Params);
+   }
+}
+
 void AFingerGun::StartShooting_Implementation()
 {
 	if (!Bullet)
@@ -43,23 +60,21 @@ void AFingerGun::StartShooting_Implementation()
 		return;
 	}
 
-	if (CurrentAmmo > 0)
-	{
-		//AActor* BulletOwner = GetOwner() ? GetOwner() : this;
-		const FTransform SpawnTransform = GunMuzzleArrow->GetComponentTransform();
-
-		FActorSpawnParameters Params;
-		Params.Owner = GetOwner();
-		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
-		GetWorld()->SpawnActor<AActor>(Bullet, SpawnTransform, Params);
-
-
-	}
+	FireGhostBullet();
 }
 
 void AFingerGun::StopShooting_Implementation()
 {
 
+}
+
+void AFingerGun::StartFiring()
+{
+   if (!Bullet)
+   {
+      return;
+   }
+
+   FireGhostBullet();
 }
 

@@ -54,6 +54,8 @@ public:
 	void PickUpAttackButtonDown();
 	void PickUpAttackButtonUp();
 	void FlingAttackButtonDown();
+	void StartShoot();
+	void StopShoot();
 
 
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
@@ -62,11 +64,14 @@ public:
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
    UAnimMontage* PickUpMontage;
 
+   UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
+   UAnimMontage* ShootMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vampire2021")
 	float BaseTurnSpeed = 10.0;
 
 	UFUNCTION(BlueprintPure, Category = "Weapons")
-	AFingerGun* GetEquippedWeapon();
+	AFingerGun* GetEquippedFingerGun();
 
    UFUNCTION(BlueprintCallable, Category = "Weapons")
    AFingerGun* EquipWeapon(TSubclassOf<AFingerGun> NewWeapon);

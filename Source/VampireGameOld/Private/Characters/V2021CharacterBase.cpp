@@ -70,6 +70,9 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
    PlayerInputComponent->BindAction(TEXT("FlingAttack"), IE_Pressed, this, &AV2021CharacterBase::FlingAttackButtonDown);
 
+   PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AV2021CharacterBase::StartShoot);
+   PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AV2021CharacterBase::StopShoot);
+
 }
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
@@ -197,38 +200,6 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
       }
    }
 
-
-   //if (outActors.Num() > 0)
-   //{
-   //   for (int i = 0; i < outActors.Num() - 1; i++)
-   //   {
-   //      D("Overlapped Actor");
-   //      TargetPickUpEnemies[i] = Cast<AEnemy>(outActors[i]);
-
-   //      if (TargetPickUpEnemies[i])
-   //      {
-   //         TargetPickUpEnemies[i]->ActivateLevitate();
-   //      }
-   //   }
-   //}
-
-
-   //if (outActors.Num() > 0)
-   //{
-   //   if (outActors[0])
-   //   {
-   //      TargetLevitatingEnemy = Cast<AEnemy>(outActors[0]);
-
-   //      if (TargetLevitatingEnemy)
-   //      {
-   //         D("Target Enemy found");
-
-   //         TargetLevitatingEnemy->ActivateLevitate();
-   //      }
-   //      
-   //   }
-   //}
-
    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
    if (AnimInstance && PickUpMontage)
@@ -267,15 +238,32 @@ void AV2021CharacterBase::FlingAttackButtonDown()
          TargetPickUpEnemies.RemoveAt(i);
       }
    }
-
-   //if (TargetLevitatingEnemy)
-   //{
-
-   //   TargetLevitatingEnemy->FlingDownedEnemy(PlayerForwardVector);
-   //}
 }
 
-AFingerGun* AV2021CharacterBase::GetEquippedWeapon()
+void AV2021CharacterBase::StartShoot()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && ShootMontage)
+   {
+      AnimInstance->Montage_Play(ShootMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("Shoot_1"), ShootMontage);
+   }
+
+   //if (EquippedFingerGun)
+   //{
+   //   EquippedFingerGun->StartShooting();
+   //}
+
+
+}
+
+void AV2021CharacterBase::StopShoot()
+{
+
+}
+
+AFingerGun* AV2021CharacterBase::GetEquippedFingerGun()
 {
 	return EquippedFingerGun;
 }
