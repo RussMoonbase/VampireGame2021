@@ -43,6 +43,7 @@ void AV2021CharacterBase::BeginPlay()
 	Super::BeginPlay();
 	
    AnimMontageMeleeSectionNum = 1;
+   bIsPickingUp = false;
 }
 
 // Called every frame
@@ -77,7 +78,7 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
 {
-	if (Controller != nullptr && AxisValue != 0.0f && !bIsMeleeAttacking)
+	if (Controller != nullptr && AxisValue != 0.0f && !bIsMeleeAttacking && !bIsPickingUp)
 	{
 		const FRotator Rotation(0.0, Controller->GetControlRotation().Yaw, 0.0);
 		const FVector MovementDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
@@ -171,6 +172,14 @@ void AV2021CharacterBase::MeleeAttack()
 
 void AV2021CharacterBase::PickUpAttackButtonDown()
 {
+
+   if (bIsPickingUp)
+   {
+      return;
+   }
+
+   bIsPickingUp = true;
+
    TArray<TEnumAsByte<EObjectTypeQuery>> OVerlappedActorsArray;
    OVerlappedActorsArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 
@@ -189,7 +198,14 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
    for (AActor* outActor : outActors)
    {
       D("Overlapped Actor");
-      TargetPickUpEnemies.Add(Cast<AEnemy>(outActor));
+      AEnemy* TempEnemy = Cast<AEnemy>(outActor);
+
+      if (TempEnemy->GetbCanBePickedUp())
+      {
+         TempEnemy->SetbCanBePickedUp(false);
+         TargetPickUpEnemies.Add(TempEnemy);
+      }
+      //TargetPickUpEnemies.Add(Cast<AEnemy>(outActor));
    }
 
    for (AEnemy* targetPickUpEnemy : TargetPickUpEnemies)
@@ -345,6 +361,11 @@ void AV2021CharacterBase::SetAttackEnd(bool booleanValue)
 {
    bAttackEnd = booleanValue;
 
-   bIsMeleeAttacking = false;
+   bIsMeleeAttacking = false; // FIX THIS so it uses the booleanValue parameter
+}
+
+void AV2021CharacterBase::SetIsPickingUp(bool booleanValue)
+{
+   bIsPickingUp = booleanValue;
 }
 

@@ -100,6 +100,9 @@ public:
    UFUNCTION(BlueprintCallable, Category = "Weapons")
    void SetAttackEnd(bool booleanValue);
 
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   void SetIsPickingUp(bool booleanValue);
+
 private:
 	AFingerGun* EquippedFingerGun;
 
@@ -112,6 +115,8 @@ private:
 	bool bAttackEnd;
 
 	bool bIsMeleeAttacking;
+
+	bool bIsPickingUp;
 
 	int AnimMontageMeleeSectionNum;
 

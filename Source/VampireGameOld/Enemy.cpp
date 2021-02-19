@@ -26,6 +26,9 @@ void AEnemy::BeginPlay()
 	CapsuleComp = GetCapsuleComponent();
 	gameTime = 0.0f;
 
+	// set bCanBePickedUpToFalse for initial pickup
+	bCanBePickedUp = true;
+
 }
 
 // Called every frame
@@ -52,6 +55,7 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+// turns on levitate so enemy begins moving up after death and player pick up attack
 void AEnemy::ActivateLevitate()
 {
 	D("Levitate called");
@@ -74,6 +78,21 @@ void AEnemy::FlingDownedEnemy(FVector ForwardVector)
    CapsuleComp->SetSimulatePhysics(true);
 	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CapsuleComp->AddForce(ForwardVector * 100000 * CapsuleComp->GetMass());
+}
+
+bool AEnemy::GetbCanBePickedUp()
+{
+	return bCanBePickedUp;
+}
+
+void AEnemy::SetbCanBePickedUp(bool booleanValue)
+{
+	bCanBePickedUp = booleanValue;
+}
+
+bool AEnemy::GetbStartFloating()
+{
+	return bStartFloating;
 }
 
 void AEnemy::FloatEnemy(float DeltaTime)

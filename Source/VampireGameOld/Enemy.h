@@ -35,8 +35,16 @@ public:
 	UFUNCTION()
 	void FlingDownedEnemy(FVector ForwardVector);
 
+	UFUNCTION()
+	bool GetbCanBePickedUp();
+
+	UFUNCTION()
+	void SetbCanBePickedUp(bool booleanValue);
+
+	UFUNCTION()
+	bool GetbStartFloating();
+
 	bool bIsLevitating;
-	bool bStartFloating;
 	bool bGravity;
 
 	float gameTime;
@@ -51,6 +59,10 @@ private:
 	float OrginalZLocationBeforeLevitate;
 
 	float AngleAxis;
+
+	bool bCanBePickedUp;
+
+	bool bStartFloating;
 
 	FVector AxisVector;
 
