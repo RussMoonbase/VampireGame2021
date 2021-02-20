@@ -31,9 +31,9 @@ AV2021CharacterBase::AV2021CharacterBase()
 	TheCameraComp->SetupAttachment(TheSpringArm, USpringArmComponent::SocketName);
 
    // Create Soul Spheres
-   SoulSphere1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphere1"));
-   SoulSphere2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphere2"));
-   SoulSphere3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphere3"));
+   SoulSphereMeshComp1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphereMeshComp1"));
+   SoulSphereMeshComp2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphereMeshComp2"));
+   SoulSphereMeshComp3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphereMeshComp3"));
 
    // turn off camera rotation so camera doesn't control player turn
 	bUseControllerRotationPitch = false;
@@ -354,19 +354,22 @@ void AV2021CharacterBase::SetIsPickingUp(bool booleanValue)
 
 void AV2021CharacterBase::EquipSoulSpheres()
 {
-   if (SoulSphere1)
+   if (SoulSphereMeshComp1)
    {
-      SoulSphere1->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SoulAttachSocket1);
+      SoulSphereMeshComp1->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SoulAttachSocket1);
+      SoulSphereMeshComp1->SetVisibility(false);
    }
 
-   if (SoulSphere2)
+   if (SoulSphereMeshComp2)
    {
-      SoulSphere2->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SoulAttachSocket2);
+      SoulSphereMeshComp2->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SoulAttachSocket2);
+      SoulSphereMeshComp2->SetVisibility(false);
    }
 
-   if (SoulSphere3)
+   if (SoulSphereMeshComp3)
    {
-      SoulSphere3->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SoulAttachSocket3);
+      SoulSphereMeshComp3->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SoulAttachSocket3);
+      SoulSphereMeshComp3->SetVisibility(false);
    }
 }
 

@@ -34,15 +34,6 @@ public:
 
 	USpringArmComponent* GetSpringArm() { return TheSpringArm; }
 
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
-   UStaticMeshComponent* SoulSphere1;
-
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
-   UStaticMeshComponent* SoulSphere2;
-
-   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
-   UStaticMeshComponent* SoulSphere3;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -124,6 +115,16 @@ public:
 
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
    FName SoulAttachSocket3;
+
+	// soul sphere meshes to activate when the player grabs souls
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
+	UStaticMeshComponent* SoulSphereMeshComp1;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
+	UStaticMeshComponent* SoulSphereMeshComp2;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
+	UStaticMeshComponent* SoulSphereMeshComp3;
 
 private:
 	AFingerGun* EquippedFingerGun;
