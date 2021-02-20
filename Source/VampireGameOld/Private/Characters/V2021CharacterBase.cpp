@@ -193,11 +193,14 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
       //TargetPickUpEnemies.Add(Cast<AEnemy>(outActor));
    }
 
+   int EnemyCount = 0;
    for (AEnemy* targetPickUpEnemy : TargetPickUpEnemies)
    {
       if (targetPickUpEnemy)
       {
+         ++EnemyCount;
          targetPickUpEnemy->ActivateLevitate();
+         targetPickUpEnemy->SetEnemyLevitateNumber(EnemyCount);
       }
    }
 
@@ -218,27 +221,27 @@ void AV2021CharacterBase::PickUpAttackButtonUp()
 
 void AV2021CharacterBase::FlingAttackButtonDown()
 {
-   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+   //UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-   if (AnimInstance && PickUpMontage)
-   {
-      AnimInstance->Montage_Play(PickUpMontage, 0.85f);
-      AnimInstance->Montage_JumpToSection(FName("Throw"), PickUpMontage);
-   }
+   //if (AnimInstance && PickUpMontage)
+   //{
+   //   AnimInstance->Montage_Play(PickUpMontage, 0.85f);
+   //   AnimInstance->Montage_JumpToSection(FName("Throw"), PickUpMontage);
+   //}
 
-   FVector PlayerForwardVector = GetActorForwardVector();
+   //FVector PlayerForwardVector = GetActorForwardVector();
 
-   if (TargetPickUpEnemies.Num() > 0)
-   {
-      int i = TargetPickUpEnemies.Num() - 1;
-      UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
+   //if (TargetPickUpEnemies.Num() > 0)
+   //{
+   //   int i = TargetPickUpEnemies.Num() - 1;
+   //   UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
 
-      if (TargetPickUpEnemies[i])
-      {
-         TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
-         TargetPickUpEnemies.RemoveAt(i);
-      }
-   }
+   //   if (TargetPickUpEnemies[i])
+   //   {
+   //      TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
+   //      TargetPickUpEnemies.RemoveAt(i);
+   //   }
+   //}
 }
 
 void AV2021CharacterBase::StartShoot()
@@ -371,5 +374,36 @@ void AV2021CharacterBase::EquipSoulSpheres()
       SoulSphereMeshComp3->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SoulAttachSocket3);
       SoulSphereMeshComp3->SetVisibility(false);
    }
+}
+
+void AV2021CharacterBase::ActivateSoulSphere(int EnemyNumber)
+{
+   D("Activate SOUL SPHERE!");
+
+   if (EnemyNumber == 1)
+   {
+      if (SoulSphereMeshComp1)
+      {
+         SoulSphereMeshComp1->SetVisibility(true);
+      }
+   }
+
+   if (EnemyNumber == 2)
+   {
+      if (SoulSphereMeshComp2)
+      {
+         SoulSphereMeshComp2->SetVisibility(true);
+      }
+   }
+
+   if (EnemyNumber == 3)
+   {
+      if (SoulSphereMeshComp3)
+      {
+         SoulSphereMeshComp3->SetVisibility(true);
+      }
+   }
+
+   
 }
 

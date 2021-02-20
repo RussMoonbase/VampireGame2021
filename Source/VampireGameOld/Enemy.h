@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "Enemy.generated.h"
 
+class AV2021PlayerCharacter;
+
 UCLASS()
 class VAMPIREGAMEOLD_API AEnemy : public ACharacter
 {
@@ -33,6 +35,9 @@ public:
 	void ActivateLevitate();
 
 	UFUNCTION()
+	void SetEnemyLevitateNumber(int theNum);
+
+	UFUNCTION()
 	void FlingDownedEnemy(FVector ForwardVector);
 
 	UFUNCTION()
@@ -49,7 +54,7 @@ public:
 
 	float gameTime;
 
-	ACharacter* PlayerCharacter;
+	AV2021PlayerCharacter* PlayerCharacter;
 
 private:
 	void FloatEnemy(float DeltaTime);
@@ -63,6 +68,8 @@ private:
 	bool bCanBePickedUp;
 
 	bool bStartFloating;
+
+	int EnemyLevitateNumber;
 
 	FVector AxisVector;
 

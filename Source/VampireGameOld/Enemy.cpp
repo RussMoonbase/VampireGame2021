@@ -5,6 +5,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Characters/V2021PlayerCharacter.h"
 
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
@@ -41,10 +43,10 @@ void AEnemy::Tick(float DeltaTime)
 		FloatEnemy(DeltaTime);
 	}
 
-	if (bIsLevitating)
-	{
-		Levitate(DeltaTime);
-	}
+	//if (bIsLevitating)
+	//{
+	//	Levitate(DeltaTime);
+	//}
 
 }
 
@@ -68,6 +70,14 @@ void AEnemy::ActivateLevitate()
 		FVector OriginalLocation = GetActorLocation();
 		OrginalZLocationBeforeLevitate = OriginalLocation.Z;
 		bStartFloating = true;
+	}
+}
+
+void AEnemy::SetEnemyLevitateNumber(int theNum)
+{
+	if (theNum < 4 && theNum > 0)
+	{
+		EnemyLevitateNumber = theNum;
 	}
 }
 
@@ -95,6 +105,7 @@ bool AEnemy::GetbStartFloating()
 	return bStartFloating;
 }
 
+
 void AEnemy::FloatEnemy(float DeltaTime)
 {
 	FVector NewLocation = GetActorLocation();
@@ -112,6 +123,17 @@ void AEnemy::FloatEnemy(float DeltaTime)
 		float XValue = GetActorLocation().X - PlayerLocation.X;
       float YValue = GetActorLocation().Y - PlayerLocation.Y;
 		Dimensions = FVector(XValue, YValue, 0);
+		PlayerCharacter = Cast<AV2021PlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+		if (PlayerCharacter)
+		{
+			PlayerCharacter->ActivateSoulSphere(EnemyLevitateNumber);
+		}
+		
+		if (GetMesh())
+		{
+			GetMesh()->SetVisibility(false);
+		}
 	}
 
 }

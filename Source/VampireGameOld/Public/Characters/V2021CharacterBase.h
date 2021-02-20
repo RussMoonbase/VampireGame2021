@@ -116,7 +116,7 @@ public:
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
    FName SoulAttachSocket3;
 
-	// soul sphere meshes to activate when the player grabs souls
+	// soul sphere meshes
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
 	UStaticMeshComponent* SoulSphereMeshComp1;
 
@@ -125,6 +125,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
 	UStaticMeshComponent* SoulSphereMeshComp3;
+
+	// to turn on mesh after player gets a soul
+	UFUNCTION()
+	void ActivateSoulSphere(int EnemyNumber);
 
 private:
 	AFingerGun* EquippedFingerGun;
