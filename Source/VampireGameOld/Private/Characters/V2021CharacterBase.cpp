@@ -12,6 +12,7 @@
 #include "DrawDebugHelpers.h"
 #include "VampireGameOld/Enemy.h"
 #include "Weapons/FingerGun.h"
+#include "Components/StaticMeshComponent.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 
@@ -29,6 +30,12 @@ AV2021CharacterBase::AV2021CharacterBase()
 	TheCameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	TheCameraComp->SetupAttachment(TheSpringArm, USpringArmComponent::SocketName);
 
+   // Create Soul Spheres
+   SoulSphere1 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphere1"));
+   SoulSphere2 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphere2"));
+   SoulSphere3 = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SoulSphere3"));
+
+   // turn off camera rotation so camera doesn't control player turn
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
@@ -89,7 +96,7 @@ void AV2021CharacterBase::MoveForward(float AxisValue)
 
 void AV2021CharacterBase::MoveRight(float AxisValue)
 {
-   if (Controller != nullptr && AxisValue != 0.0f && !bIsMeleeAttacking)
+   if (Controller != nullptr && AxisValue != 0.0f && !bIsMeleeAttacking && !bIsPickingUp)
    {
       const FRotator Rotation(0.0, Controller->GetControlRotation().Yaw, 0.0);
       const FVector MovementDirection = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
@@ -115,10 +122,6 @@ void AV2021CharacterBase::MeleeAttackButtonDown()
 
 void AV2021CharacterBase::MeleeAttackButtonUp()
 {
-   //if (bAttackEnd = true)
-   //{
-
-   //}
    if (AnimMontageMeleeSectionNum == 1)
    {
       AnimMontageMeleeSectionNum++;
@@ -149,24 +152,6 @@ void AV2021CharacterBase::MeleeAttack()
          AnimInstance->Montage_Play(MeleeMontage, 1.25f);
          AnimInstance->Montage_JumpToSection(FName("Attack_2"), MeleeMontage);
       }
-
-      //FName CurrentSection = AnimInstance->Montage_GetCurrentSection(MeleeMontage);
-
-      //if (CurrentSection.IsNone())
-      //{
-      //   AnimInstance->Montage_Play(MeleeMontage, 1.25f);
-      //}
-      //else if (CurrentSection.IsEqual("Attack_1") && bAcceptsAttack2Input)
-      //{
-      //   AnimInstance->Montage_JumpToSection(FName("Attack_2"), MeleeMontage);
-      //}
-      //else if (CurrentSection.IsEqual("Attack_2") && bAcceptsAttack3Input)
-      //{
-      //   AnimInstance->Montage_JumpToSection(FName("Attack_3"), MeleeMontage);
-      //}
-
-      //AnimInstance->Montage_Play(MeleeMontage, 1.25f);
-      //AnimInstance->Montage_JumpToSection(FName("Attack_1"), MeleeMontage);
    }
 }
 
@@ -357,15 +342,31 @@ void AV2021CharacterBase::SetAcceptsAttack3Input(bool booleanValue)
    bAcceptsAttack3Input = booleanValue;
 }
 
-void AV2021CharacterBase::SetAttackEnd(bool booleanValue)
+void AV2021CharacterBase::SetAttackEnd(bool booleanValue) // TODO maybe rename this function
 {
-   bAttackEnd = booleanValue;
-
-   bIsMeleeAttacking = false; // FIX THIS so it uses the booleanValue parameter
+   bIsMeleeAttacking = booleanValue; // FIX THIS so it uses the booleanValue parameter
 }
 
 void AV2021CharacterBase::SetIsPickingUp(bool booleanValue)
 {
    bIsPickingUp = booleanValue;
+}
+
+void AV2021CharacterBase::EquipSoulSpheres()
+{
+   if (SoulSphere1)
+   {
+      SoulSphere1->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SoulAttachSocket1);
+   }
+
+   if (SoulSphere2)
+   {
+      SoulSphere2->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SoulAttachSocket2);
+   }
+
+   if (SoulSphere3)
+   {
+      SoulSphere3->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SoulAttachSocket3);
+   }
 }
 

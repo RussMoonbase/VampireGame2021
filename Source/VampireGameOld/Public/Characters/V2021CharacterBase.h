@@ -13,6 +13,7 @@ class AMeleeWeaponBase;
 class AFingerGun;
 class UAnimMontage;
 class AEnemy;
+class UStaticMeshComponent;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AV2021CharacterBase : public ACharacter
@@ -32,6 +33,15 @@ public:
 	UCameraComponent* GetCameraComponent() { return TheCameraComp; }
 
 	USpringArmComponent* GetSpringArm() { return TheSpringArm; }
+
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
+   UStaticMeshComponent* SoulSphere1;
+
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
+   UStaticMeshComponent* SoulSphere2;
+
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
+   UStaticMeshComponent* SoulSphere3;
 
 protected:
 	// Called when the game starts or when spawned
@@ -102,6 +112,18 @@ public:
 
    UFUNCTION(BlueprintCallable, Category = "Weapons")
    void SetIsPickingUp(bool booleanValue);
+
+   UFUNCTION(BlueprintCallable, Category = "Powers")
+   void EquipSoulSpheres();
+
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
+   FName SoulAttachSocket1;
+
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
+   FName SoulAttachSocket2;
+
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
+   FName SoulAttachSocket3;
 
 private:
 	AFingerGun* EquippedFingerGun;
