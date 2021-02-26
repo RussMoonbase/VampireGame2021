@@ -13,6 +13,7 @@
 #include "VampireGameOld/Enemy.h"
 #include "Weapons/FingerGun.h"
 #include "Components/StaticMeshComponent.h"
+#include "Player/ZTargetingSystem.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 
@@ -42,6 +43,8 @@ AV2021CharacterBase::AV2021CharacterBase()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0, 540.0, 0.0);
+
+   TargetingSystemComp = CreateDefaultSubobject<UZTargetingSystem>(TEXT("ZTargetSysComp"));
 }
 
 // Called when the game starts or when spawned
@@ -81,6 +84,7 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
    PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AV2021CharacterBase::StartShoot);
    PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AV2021CharacterBase::StopShoot);
 
+   PlayerInputComponent->BindAction(TEXT("ZTargeting"), IE_Pressed, this, &AV2021CharacterBase::ActivateTargetingSystem);
 }
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
@@ -265,6 +269,14 @@ void AV2021CharacterBase::StartShoot()
 void AV2021CharacterBase::StopShoot()
 {
 
+}
+
+void AV2021CharacterBase::ActivateTargetingSystem()
+{
+   if (TargetingSystemComp)
+   {
+      TargetingSystemComp->LockOnTarget();
+   }
 }
 
 AFingerGun* AV2021CharacterBase::GetEquippedFingerGun()

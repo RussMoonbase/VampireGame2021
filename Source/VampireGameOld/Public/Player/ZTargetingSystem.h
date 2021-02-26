@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Player Character")
 	AV2021PlayerCharacter* PlayerCharacter;
 
+   UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Targeting System")
+   float targetSphereRadius = 1000.0f;
+
 	UFUNCTION()
 	void LockOnTarget();
 		

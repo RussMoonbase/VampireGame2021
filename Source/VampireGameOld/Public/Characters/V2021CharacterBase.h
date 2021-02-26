@@ -14,6 +14,7 @@ class AFingerGun;
 class UAnimMontage;
 class AEnemy;
 class UStaticMeshComponent;
+class UZTargetingSystem;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AV2021CharacterBase : public ACharacter
@@ -57,6 +58,7 @@ public:
 	void FlingAttackButtonDown();
 	void StartShoot();
 	void StopShoot();
+	void ActivateTargetingSystem();
 
 
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
@@ -129,6 +131,11 @@ public:
 	// to turn on mesh after player gets a soul
 	UFUNCTION()
 	void ActivateSoulSphere(int EnemyNumber);
+
+	// targeting system for melee and projectile attacks
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
+	UZTargetingSystem* TargetingSystemComp;
+
 
 private:
 	AFingerGun* EquippedFingerGun;
