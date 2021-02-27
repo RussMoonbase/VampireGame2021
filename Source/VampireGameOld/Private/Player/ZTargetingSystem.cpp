@@ -36,7 +36,6 @@ void UZTargetingSystem::BeginPlay()
    {
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, TEXT("Player is active in ZTargeting"));
    }
-	// ...
 	
 }
 
@@ -73,12 +72,21 @@ void UZTargetingSystem::LockOnTarget()
    UKismetSystemLibrary::SphereOverlapActors(GetWorld(), sphereSpawnLocation, targetSphereRadius, OverlappedActorsArray, classToTarget, ignoreThis, outActors);
    DrawDebugSphere(GetWorld(), sphereSpawnLocation, targetSphereRadius, 12, FColor::Yellow, true, -1.0f);
 
+   FString smallestDistanceEnemy = outActors[0]->GetName();
+   closestTargetDistance = (outActors[0]->GetActorLocation() - PlayerCharacter->GetActorLocation()).SizeSquared();
    for (AActor* outActor : outActors)
    {
       float targetDistance = (outActor->GetActorLocation() - PlayerCharacter->GetActorLocation()).SizeSquared();
-      GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Enemy Name = %s"), *outActor->GetName()));
-      GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Distance to the player = %f"), targetDistance));
-   }
-}
 
+      if (targetDistance < closestTargetDistance)
+      {
+         closestTargetDistance = targetDistance;
+         smallestDistanceEnemy = outActor->GetName();
+         lockedTargetEnemy = outActor;
+      }
+   }
+
+   //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Shortest Distance Enemy Name = %s"), *smallestDistanceEnemy));
+   //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Shortest Distance = %f"), closestTargetDistance));
+}
 

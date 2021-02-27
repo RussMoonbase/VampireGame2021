@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Characters/V2021PlayerCharacter.h"
+#include "Blueprint/UserWidget.h"
 
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
@@ -30,6 +31,9 @@ void AEnemy::BeginPlay()
 
 	// set bCanBePickedUpToFalse for initial pickup
 	bCanBePickedUp = true;
+
+	// enemy is NOT dead on begin play
+	bIsDead = false;
 
 }
 
@@ -104,7 +108,6 @@ bool AEnemy::GetbStartFloating()
 {
 	return bStartFloating;
 }
-
 
 void AEnemy::FloatEnemy(float DeltaTime)
 {

@@ -7,6 +7,7 @@
 #include "Enemy.generated.h"
 
 class AV2021PlayerCharacter;
+class UUserWidget;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AEnemy : public ACharacter
@@ -68,6 +69,8 @@ private:
 	bool bCanBePickedUp;
 
 	bool bStartFloating;
+
+	bool bIsDead;
 
 	int EnemyLevitateNumber;
 

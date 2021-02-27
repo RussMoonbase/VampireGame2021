@@ -7,6 +7,7 @@
 #include "ZTargetingSystem.generated.h"
 
 class AV2021PlayerCharacter;
+class AEnemy;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class VAMPIREGAMEOLD_API UZTargetingSystem : public UActorComponent
@@ -33,5 +34,10 @@ public:
 
 	UFUNCTION()
 	void LockOnTarget();
+
+private:
+	float closestTargetDistance;
+
+	AActor* lockedTargetEnemy;
 		
 };
