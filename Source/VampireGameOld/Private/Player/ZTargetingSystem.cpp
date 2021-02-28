@@ -7,6 +7,7 @@
 #include "DrawDebugHelpers.h"
 #include "VampireGameOld/Enemy.h"
 #include "Math/Vector.h"
+#include "Math/NumericLimits.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
@@ -50,6 +51,11 @@ void UZTargetingSystem::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 void UZTargetingSystem::LockOnTarget()
 {
+   if (lockedTargetEnemy)
+   {
+      lockedTargetEnemy->SetTargetDotVisibility(false);
+   }
+
    TArray<TEnumAsByte<EObjectTypeQuery>> OverlappedActorsArray;
    OverlappedActorsArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 
@@ -72,8 +78,13 @@ void UZTargetingSystem::LockOnTarget()
    UKismetSystemLibrary::SphereOverlapActors(GetWorld(), sphereSpawnLocation, targetSphereRadius, OverlappedActorsArray, classToTarget, ignoreThis, outActors);
    DrawDebugSphere(GetWorld(), sphereSpawnLocation, targetSphereRadius, 12, FColor::Yellow, true, -1.0f);
 
-   FString smallestDistanceEnemy = outActors[0]->GetName();
-   closestTargetDistance = (outActors[0]->GetActorLocation() - PlayerCharacter->GetActorLocation()).SizeSquared();
+   //FString smallestDistanceEnemy = outActors[0]->GetName();
+   //closestTargetDistance = (outActors[0]->GetActorLocation() - PlayerCharacter->GetActorLocation()).SizeSquared();
+
+   //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Shortest Distance Enemy Name = %s"), *smallestDistanceEnemy));
+   //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Shortest Distance = %f"), closestTargetDistance));
+
+   closestTargetDistance = TNumericLimits<float>::Max();
    for (AActor* outActor : outActors)
    {
       float targetDistance = (outActor->GetActorLocation() - PlayerCharacter->GetActorLocation()).SizeSquared();
@@ -81,8 +92,26 @@ void UZTargetingSystem::LockOnTarget()
       if (targetDistance < closestTargetDistance)
       {
          closestTargetDistance = targetDistance;
-         smallestDistanceEnemy = outActor->GetName();
-         lockedTargetEnemy = outActor;
+         //smallestDistanceEnemy = outActor->GetName();
+         lockedTargetActor = outActor;
+      }
+   }
+
+   lockedTargetEnemy = Cast<AEnemy>(lockedTargetActor);
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Locked On Enemy = %s"), *lockedTargetEnemy->GetName()));
+
+   if (lockedTargetEnemy)
+   {
+      lockedTargetEnemy->SetTargetDotVisibility(true);
+   }
+
+   if (PlayerCharacter)
+   {
+      PlayerCharacter->TurnOnLockedOnCam();
+
+      if (lockedTargetEnemy)
+      {
+         PlayerCharacter->SetLockedOnEnemy(lockedTargetEnemy);
       }
    }
 

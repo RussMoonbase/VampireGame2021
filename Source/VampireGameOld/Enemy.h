@@ -52,6 +52,9 @@ public:
 	UFUNCTION()
 	bool GetbStartFloating();
 
+	UFUNCTION()
+	void SetTargetDotVisibility(bool booleanValue);
+
 	bool bIsLevitating;
 	bool bGravity;
 

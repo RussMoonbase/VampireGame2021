@@ -38,6 +38,7 @@ public:
 private:
 	float closestTargetDistance;
 
-	AActor* lockedTargetEnemy;
+	AActor* lockedTargetActor;
+	AEnemy* lockedTargetEnemy;
 		
 };

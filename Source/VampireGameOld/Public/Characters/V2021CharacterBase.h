@@ -109,6 +109,12 @@ public:
    UFUNCTION(BlueprintCallable, Category = "Powers")
    void EquipSoulSpheres();
 
+	UFUNCTION()
+	void TurnOnLockedOnCam();
+
+	UFUNCTION()
+	void SetLockedOnEnemy(AEnemy* theEnemy);
+
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
    FName SoulAttachSocket1;
 
@@ -152,9 +158,13 @@ private:
 
 	bool bIsPickingUp;
 
+	bool bIsZTargetLockedOn;
+
 	int AnimMontageMeleeSectionNum;
 
 	AEnemy* TargetLevitatingEnemy;
+
+	AEnemy* LockedOnEnemy;
 
 	TArray<AEnemy*> TargetPickUpEnemies;
 };

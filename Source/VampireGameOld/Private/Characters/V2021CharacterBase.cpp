@@ -14,6 +14,7 @@
 #include "Weapons/FingerGun.h"
 #include "Components/StaticMeshComponent.h"
 #include "Player/ZTargetingSystem.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 
@@ -89,6 +90,24 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
 {
+   if (bIsZTargetLockedOn)
+   {
+      FVector CamLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+      CamLocation = FVector(CamLocation.X, CamLocation.Y, 0.0f);
+
+      if (LockedOnEnemy)
+      {
+         FVector EnemyLocation = LockedOnEnemy->GetActorLocation();
+         EnemyLocation = FVector(EnemyLocation.X, EnemyLocation.Y, 0.0f);
+
+         FRotator NewCamRotation = UKismetMathLibrary::FindLookAtRotation(CamLocation, EnemyLocation);
+         Controller->SetControlRotation(NewCamRotation);
+      }
+
+
+   }
+
+
 	if (Controller != nullptr && AxisValue != 0.0f && !bIsMeleeAttacking && !bIsPickingUp)
 	{
 		const FRotator Rotation(0.0, Controller->GetControlRotation().Yaw, 0.0);
@@ -386,6 +405,19 @@ void AV2021CharacterBase::EquipSoulSpheres()
       SoulSphereMeshComp3->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SoulAttachSocket3);
       SoulSphereMeshComp3->SetVisibility(false);
    }
+}
+
+void AV2021CharacterBase::TurnOnLockedOnCam()
+{
+   bIsZTargetLockedOn = true;
+   bUseControllerRotationPitch = true;
+   bUseControllerRotationYaw = true;
+   bUseControllerRotationRoll = true;
+}
+
+void AV2021CharacterBase::SetLockedOnEnemy(AEnemy* theEnemy)
+{
+   LockedOnEnemy = theEnemy;
 }
 
 void AV2021CharacterBase::ActivateSoulSphere(int EnemyNumber)

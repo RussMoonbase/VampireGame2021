@@ -40,6 +40,9 @@ void AEnemy::BeginPlay()
 	// enemy is NOT dead on begin play
 	bIsDead = false;
 
+	// turn off target dot widget
+	TargetWidgetComp->SetVisibility(false);
+
 }
 
 // Called every frame
@@ -112,6 +115,14 @@ void AEnemy::SetbCanBePickedUp(bool booleanValue)
 bool AEnemy::GetbStartFloating()
 {
 	return bStartFloating;
+}
+
+void AEnemy::SetTargetDotVisibility(bool booleanValue)
+{
+	if (TargetWidgetComp)
+	{
+		TargetWidgetComp->SetVisibility(booleanValue);
+	}
 }
 
 void AEnemy::FloatEnemy(float DeltaTime)
