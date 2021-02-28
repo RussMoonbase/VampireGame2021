@@ -7,7 +7,9 @@
 #include "Enemy.generated.h"
 
 class AV2021PlayerCharacter;
-class UUserWidget;
+class UWidgetComponent;
+//class UUserWidget;
+
 
 UCLASS()
 class VAMPIREGAMEOLD_API AEnemy : public ACharacter
@@ -56,6 +58,9 @@ public:
 	float gameTime;
 
 	AV2021PlayerCharacter* PlayerCharacter;
+
+	UPROPERTY(VisibleAnywhere)
+	UWidgetComponent* TargetWidgetComp;
 
 private:
 	void FloatEnemy(float DeltaTime);

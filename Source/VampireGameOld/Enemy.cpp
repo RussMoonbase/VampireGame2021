@@ -7,7 +7,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Characters/V2021PlayerCharacter.h"
-#include "Blueprint/UserWidget.h"
+#include <Components/WidgetComponent.h>
+#include "Characters/TargetDot.h"
 
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
@@ -19,6 +20,10 @@ AEnemy::AEnemy()
 
 	Dimensions = FVector(100, 0, 0);
 	AxisVector = FVector(0, 0, 1);
+
+	TargetWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("TargetDotComp"));
+	TargetWidgetComp->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
 }
 
 // Called when the game starts or when spawned
