@@ -119,3 +119,11 @@ void UZTargetingSystem::LockOnTarget()
    //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Shortest Distance = %f"), closestTargetDistance));
 }
 
+void UZTargetingSystem::TurnOffLockOnTarget()
+{
+   if (lockedTargetEnemy)
+   {
+      lockedTargetEnemy->SetTargetDotVisibility(false);
+   }
+}
+

@@ -35,6 +35,9 @@ public:
 	UFUNCTION()
 	void LockOnTarget();
 
+	UFUNCTION()
+	void TurnOffLockOnTarget();
+
 private:
 	float closestTargetDistance;
 

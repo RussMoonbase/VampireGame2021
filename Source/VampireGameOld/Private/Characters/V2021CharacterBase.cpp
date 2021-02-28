@@ -92,21 +92,8 @@ void AV2021CharacterBase::MoveForward(float AxisValue)
 {
    if (bIsZTargetLockedOn)
    {
-      FVector CamLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
-      CamLocation = FVector(CamLocation.X, CamLocation.Y, 0.0f);
-
-      if (LockedOnEnemy)
-      {
-         FVector EnemyLocation = LockedOnEnemy->GetActorLocation();
-         EnemyLocation = FVector(EnemyLocation.X, EnemyLocation.Y, 0.0f);
-
-         FRotator NewCamRotation = UKismetMathLibrary::FindLookAtRotation(CamLocation, EnemyLocation);
-         Controller->SetControlRotation(NewCamRotation);
-      }
-
-
+      CameraLockOn();
    }
-
 
 	if (Controller != nullptr && AxisValue != 0.0f && !bIsMeleeAttacking && !bIsPickingUp)
 	{
@@ -294,7 +281,16 @@ void AV2021CharacterBase::ActivateTargetingSystem()
 {
    if (TargetingSystemComp)
    {
-      TargetingSystemComp->LockOnTarget();
+      if (!bIsZTargetLockedOn)
+      {
+         TargetingSystemComp->LockOnTarget();
+      }
+      else
+      {
+         TargetingSystemComp->TurnOffLockOnTarget();
+         TurnOffLockedOnCamera();
+      }
+
    }
 }
 
@@ -410,7 +406,7 @@ void AV2021CharacterBase::EquipSoulSpheres()
 void AV2021CharacterBase::TurnOnLockedOnCam()
 {
    bIsZTargetLockedOn = true;
-   bUseControllerRotationPitch = true;
+   bUseControllerRotationPitch = false;
    bUseControllerRotationYaw = true;
    bUseControllerRotationRoll = true;
 }
@@ -418,6 +414,30 @@ void AV2021CharacterBase::TurnOnLockedOnCam()
 void AV2021CharacterBase::SetLockedOnEnemy(AEnemy* theEnemy)
 {
    LockedOnEnemy = theEnemy;
+}
+
+void AV2021CharacterBase::TurnOffLockedOnCamera()
+{
+   bIsZTargetLockedOn = false;
+   bUseControllerRotationPitch = false;
+   bUseControllerRotationYaw = false;
+   bUseControllerRotationRoll = false;
+}
+
+void AV2021CharacterBase::CameraLockOn()
+{
+   FVector CamLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+   CamLocation = FVector(CamLocation.X, CamLocation.Y, 0.0f);
+
+   if (LockedOnEnemy)
+   {
+      FVector EnemyLocation = LockedOnEnemy->GetActorLocation();
+      EnemyLocation = FVector(EnemyLocation.X, EnemyLocation.Y, 0.0f);
+
+      FRotator NewCamRotation = UKismetMathLibrary::FindLookAtRotation(CamLocation, EnemyLocation);
+      FRotator FinalRotation = FRotator(0.0f, NewCamRotation.Yaw, NewCamRotation.Roll);
+      Controller->SetControlRotation(FinalRotation);
+   }
 }
 
 void AV2021CharacterBase::ActivateSoulSphere(int EnemyNumber)

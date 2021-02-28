@@ -115,6 +115,9 @@ public:
 	UFUNCTION()
 	void SetLockedOnEnemy(AEnemy* theEnemy);
 
+	UFUNCTION()
+	void TurnOffLockedOnCamera();
+
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
    FName SoulAttachSocket1;
 
@@ -167,4 +170,6 @@ private:
 	AEnemy* LockedOnEnemy;
 
 	TArray<AEnemy*> TargetPickUpEnemies;
+
+	void CameraLockOn();
 };
