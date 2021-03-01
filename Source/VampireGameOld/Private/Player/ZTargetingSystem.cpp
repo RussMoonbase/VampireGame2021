@@ -8,6 +8,7 @@
 #include "VampireGameOld/Enemy.h"
 #include "Math/Vector.h"
 #include "Math/NumericLimits.h"
+#include "Player/HealthComponent.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
@@ -78,23 +79,25 @@ void UZTargetingSystem::LockOnTarget()
    UKismetSystemLibrary::SphereOverlapActors(GetWorld(), sphereSpawnLocation, targetSphereRadius, OverlappedActorsArray, classToTarget, ignoreThis, outActors);
    DrawDebugSphere(GetWorld(), sphereSpawnLocation, targetSphereRadius, 12, FColor::Yellow, true, -1.0f);
 
-   //FString smallestDistanceEnemy = outActors[0]->GetName();
-   //closestTargetDistance = (outActors[0]->GetActorLocation() - PlayerCharacter->GetActorLocation()).SizeSquared();
-
-   //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Shortest Distance Enemy Name = %s"), *smallestDistanceEnemy));
-   //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Shortest Distance = %f"), closestTargetDistance));
-
    closestTargetDistance = TNumericLimits<float>::Max();
    for (AActor* outActor : outActors)
    {
       float targetDistance = (outActor->GetActorLocation() - PlayerCharacter->GetActorLocation()).SizeSquared();
 
-      if (targetDistance < closestTargetDistance)
+      if (outActor->FindComponentByClass<UHealthComponent>())
       {
-         closestTargetDistance = targetDistance;
-         //smallestDistanceEnemy = outActor->GetName();
-         lockedTargetActor = outActor;
+         if (targetDistance < closestTargetDistance)
+         {
+            closestTargetDistance = targetDistance;
+            lockedTargetActor = outActor;
+         }
       }
+      //if (targetDistance < closestTargetDistance)
+      //{
+      //   closestTargetDistance = targetDistance;
+      //   //smallestDistanceEnemy = outActor->GetName();
+      //   lockedTargetActor = outActor;
+      //}
    }
 
    lockedTargetEnemy = Cast<AEnemy>(lockedTargetActor);

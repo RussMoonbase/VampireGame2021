@@ -117,12 +117,20 @@ void AV2021CharacterBase::MoveRight(float AxisValue)
 
 void AV2021CharacterBase::TurnRight(float AxisValue)
 {
-	AddControllerYawInput(AxisValue * BaseTurnSpeed * GetWorld()->GetDeltaSeconds());
+   if (!bIsZTargetLockedOn)
+   {
+      AddControllerYawInput(AxisValue * BaseTurnSpeed * GetWorld()->GetDeltaSeconds());
+   }
+
 }
 
 void AV2021CharacterBase::LookUp(float AxisValue)
 {
-	AddControllerPitchInput(AxisValue * BaseTurnSpeed * GetWorld()->GetDeltaSeconds());
+   if (!bIsZTargetLockedOn)
+   {
+      AddControllerPitchInput(AxisValue * BaseTurnSpeed * GetWorld()->GetDeltaSeconds());
+   }
+
 }
 
 void AV2021CharacterBase::MeleeAttackButtonDown()
@@ -231,27 +239,27 @@ void AV2021CharacterBase::PickUpAttackButtonUp()
 
 void AV2021CharacterBase::FlingAttackButtonDown()
 {
-   //UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-   //if (AnimInstance && PickUpMontage)
-   //{
-   //   AnimInstance->Montage_Play(PickUpMontage, 0.85f);
-   //   AnimInstance->Montage_JumpToSection(FName("Throw"), PickUpMontage);
-   //}
+   if (AnimInstance && PickUpMontage)
+   {
+      AnimInstance->Montage_Play(PickUpMontage, 0.85f);
+      AnimInstance->Montage_JumpToSection(FName("Throw"), PickUpMontage);
+   }
 
-   //FVector PlayerForwardVector = GetActorForwardVector();
+   FVector PlayerForwardVector = GetActorForwardVector();
 
-   //if (TargetPickUpEnemies.Num() > 0)
-   //{
-   //   int i = TargetPickUpEnemies.Num() - 1;
-   //   UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
+   if (TargetPickUpEnemies.Num() > 0)
+   {
+      int i = TargetPickUpEnemies.Num() - 1;
+      UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
 
-   //   if (TargetPickUpEnemies[i])
-   //   {
-   //      TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
-   //      TargetPickUpEnemies.RemoveAt(i);
-   //   }
-   //}
+      if (TargetPickUpEnemies[i])
+      {
+         TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
+         TargetPickUpEnemies.RemoveAt(i);
+      }
+   }
 }
 
 void AV2021CharacterBase::StartShoot()
@@ -435,8 +443,7 @@ void AV2021CharacterBase::CameraLockOn()
       EnemyLocation = FVector(EnemyLocation.X, EnemyLocation.Y, 0.0f);
 
       FRotator NewCamRotation = UKismetMathLibrary::FindLookAtRotation(CamLocation, EnemyLocation);
-      FRotator FinalRotation = FRotator(0.0f, NewCamRotation.Yaw, NewCamRotation.Roll);
-      Controller->SetControlRotation(FinalRotation);
+      Controller->SetControlRotation(NewCamRotation);
    }
 }
 
@@ -466,8 +473,35 @@ void AV2021CharacterBase::ActivateSoulSphere(int EnemyNumber)
       {
          SoulSphereMeshComp3->SetVisibility(true);
       }
+   } 
+}
+
+void AV2021CharacterBase::DeactivateSoulSphere(int EnemyNumber)
+{
+   D("Deactivate SOUL SPHERE!");
+
+   if (EnemyNumber == 1)
+   {
+      if (SoulSphereMeshComp1)
+      {
+         SoulSphereMeshComp1->SetVisibility(false);
+      }
    }
 
-   
+   if (EnemyNumber == 2)
+   {
+      if (SoulSphereMeshComp2)
+      {
+         SoulSphereMeshComp2->SetVisibility(false);
+      }
+   }
+
+   if (EnemyNumber == 3)
+   {
+      if (SoulSphereMeshComp3)
+      {
+         SoulSphereMeshComp3->SetVisibility(false);
+      }
+   }
 }
 

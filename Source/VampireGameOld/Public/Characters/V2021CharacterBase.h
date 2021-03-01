@@ -141,6 +141,9 @@ public:
 	UFUNCTION()
 	void ActivateSoulSphere(int EnemyNumber);
 
+	UFUNCTION()
+	void DeactivateSoulSphere(int EnemyNumber);
+
 	// targeting system for melee and projectile attacks
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
 	UZTargetingSystem* TargetingSystemComp;

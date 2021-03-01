@@ -55,10 +55,10 @@ void AEnemy::Tick(float DeltaTime)
 		FloatEnemy(DeltaTime);
 	}
 
-	//if (bIsLevitating)
-	//{
-	//	Levitate(DeltaTime);
-	//}
+   if (bIsLevitating)
+   {
+      Levitate(DeltaTime);
+   }
 
 }
 
@@ -95,6 +95,16 @@ void AEnemy::SetEnemyLevitateNumber(int theNum)
 
 void AEnemy::FlingDownedEnemy(FVector ForwardVector)
 {
+	if (GetMesh())
+	{
+		GetMesh()->SetVisibility(true);
+	}
+
+	if (PlayerCharacter)
+	{
+		PlayerCharacter->DeactivateSoulSphere(EnemyLevitateNumber);
+	}
+
 	bIsLevitating = false;
    CapsuleComp->SetEnableGravity(true);
    CapsuleComp->SetSimulatePhysics(true);
