@@ -15,6 +15,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Player/ZTargetingSystem.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Player/HealthComponent.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 
@@ -203,12 +204,18 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
       D("Overlapped Actor");
       AEnemy* TempEnemy = Cast<AEnemy>(outActor);
 
-      if (TempEnemy->GetbCanBePickedUp())
+      //if (TempEnemy->GetbCanBePickedUp())
+      //{
+      //   TempEnemy->SetbCanBePickedUp(false);
+      //   TargetPickUpEnemies.Add(TempEnemy);
+      //}
+      if (TempEnemy->FindComponentByClass<UHealthComponent>())
       {
-         TempEnemy->SetbCanBePickedUp(false);
-         TargetPickUpEnemies.Add(TempEnemy);
+         if (TempEnemy->FindComponentByClass<UHealthComponent>()->GetIsDead())
+         {
+            TargetPickUpEnemies.Add(TempEnemy);
+         }
       }
-      //TargetPickUpEnemies.Add(Cast<AEnemy>(outActor));
    }
 
    int EnemyCount = 0;
@@ -422,6 +429,22 @@ void AV2021CharacterBase::TurnOnLockedOnCam()
 void AV2021CharacterBase::SetLockedOnEnemy(AEnemy* theEnemy)
 {
    LockedOnEnemy = theEnemy;
+}
+
+void AV2021CharacterBase::EquipLevitatingEnemy(AEnemy* theEnemy)
+{
+   if (theEnemy)
+   {
+      theEnemy->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SoulMuzzleSocket);
+   }
+}
+
+void AV2021CharacterBase::UnequipLevitatingEnemy(AEnemy* theEnemy)
+{
+   if (theEnemy)
+   {
+      //theEnemy->DetachFromActor(FAttachmentTransformRules::KeepRelativeTransform)
+   }
 }
 
 void AV2021CharacterBase::TurnOffLockedOnCamera()

@@ -55,10 +55,10 @@ void AEnemy::Tick(float DeltaTime)
 		FloatEnemy(DeltaTime);
 	}
 
-   if (bIsLevitating)
-   {
-      Levitate(DeltaTime);
-   }
+   //if (bIsLevitating)
+   //{
+   //   Levitate(DeltaTime);
+   //}
 
 }
 
@@ -147,22 +147,23 @@ void AEnemy::FloatEnemy(float DeltaTime)
 	else
 	{
 		bStartFloating = false;
-		bIsLevitating = true;
-		FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
-		float XValue = GetActorLocation().X - PlayerLocation.X;
-      float YValue = GetActorLocation().Y - PlayerLocation.Y;
-		Dimensions = FVector(XValue, YValue, 0);
+		//bIsLevitating = true;
+		//FVector PlayerLocation = GetWorld()->GetFirstPlayerController()->GetPawn()->GetActorLocation();
+      //float XValue = GetActorLocation().X - PlayerLocation.X;
+      //float YValue = GetActorLocation().Y - PlayerLocation.Y;
+      //Dimensions = FVector(XValue, YValue, 0);
 		PlayerCharacter = Cast<AV2021PlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-		if (PlayerCharacter)
-		{
-			PlayerCharacter->ActivateSoulSphere(EnemyLevitateNumber);
-		}
-		
 		if (GetMesh())
 		{
 			GetMesh()->SetVisibility(false);
 		}
+
+      if (PlayerCharacter)
+      {
+         PlayerCharacter->ActivateSoulSphere(EnemyLevitateNumber);
+			PlayerCharacter->EquipLevitatingEnemy(this);
+      }
 	}
 
 }

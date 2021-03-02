@@ -60,7 +60,6 @@ public:
 	void StopShoot();
 	void ActivateTargetingSystem();
 
-
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
    UAnimMontage* MeleeMontage;
 
@@ -116,6 +115,12 @@ public:
 	void SetLockedOnEnemy(AEnemy* theEnemy);
 
 	UFUNCTION()
+	void EquipLevitatingEnemy(AEnemy* theEnemy);
+
+	UFUNCTION()
+	void UnequipLevitatingEnemy(AEnemy* theEnemy);
+
+	UFUNCTION()
 	void TurnOffLockedOnCamera();
 
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
@@ -126,6 +131,9 @@ public:
 
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
    FName SoulAttachSocket3;
+
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
+   FName SoulMuzzleSocket;
 
 	// soul sphere meshes
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")

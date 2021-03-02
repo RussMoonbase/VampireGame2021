@@ -86,7 +86,8 @@ void UZTargetingSystem::LockOnTarget()
 
       if (outActor->FindComponentByClass<UHealthComponent>())
       {
-         if (targetDistance < closestTargetDistance)
+         bool isDead = outActor->FindComponentByClass<UHealthComponent>()->GetIsDead();
+         if (targetDistance < closestTargetDistance && !isDead)
          {
             closestTargetDistance = targetDistance;
             lockedTargetActor = outActor;
