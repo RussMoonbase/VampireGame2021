@@ -443,7 +443,7 @@ void AV2021CharacterBase::UnequipLevitatingEnemy(AEnemy* theEnemy)
 {
    if (theEnemy)
    {
-      //theEnemy->DetachFromActor(FAttachmentTransformRules::KeepRelativeTransform)
+      theEnemy->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
    }
 }
 

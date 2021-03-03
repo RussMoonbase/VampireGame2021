@@ -79,6 +79,7 @@ void AEnemy::ActivateLevitate()
 		CapsuleComp->SetEnableGravity(false);
 		CapsuleComp->SetSimulatePhysics(false);
 		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 		FVector OriginalLocation = GetActorLocation();
 		OrginalZLocationBeforeLevitate = OriginalLocation.Z;
 		bStartFloating = true;
@@ -95,15 +96,16 @@ void AEnemy::SetEnemyLevitateNumber(int theNum)
 
 void AEnemy::FlingDownedEnemy(FVector ForwardVector)
 {
-	if (GetMesh())
-	{
-		GetMesh()->SetVisibility(true);
-	}
-
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->DeactivateSoulSphere(EnemyLevitateNumber);
+		PlayerCharacter->UnequipLevitatingEnemy(this);
 	}
+
+   if (GetMesh())
+   {
+      GetMesh()->SetVisibility(true);
+   }
 
 	bIsLevitating = false;
    CapsuleComp->SetEnableGravity(true);
@@ -157,6 +159,7 @@ void AEnemy::FloatEnemy(float DeltaTime)
 		if (GetMesh())
 		{
 			GetMesh()->SetVisibility(false);
+			GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 		}
 
       if (PlayerCharacter)
@@ -164,6 +167,9 @@ void AEnemy::FloatEnemy(float DeltaTime)
          PlayerCharacter->ActivateSoulSphere(EnemyLevitateNumber);
 			PlayerCharacter->EquipLevitatingEnemy(this);
       }
+
+		//CapsuleComp->SetSimulatePhysics(true);
+		//CapsuleComp->SetCollisionProfileName(TEXT("OverlapAll"));
 	}
 
 }
