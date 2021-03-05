@@ -254,16 +254,23 @@ void AV2021CharacterBase::FlingAttackButtonDown()
       AnimInstance->Montage_JumpToSection(FName("Throw"), PickUpMontage);
    }
 
-   FVector PlayerForwardVector = GetActorForwardVector();
-
+   //FVector PlayerForwardVector = GetActorForwardVector();
+   FVector TargetVector = GetActorForwardVector();
+   
    if (TargetPickUpEnemies.Num() > 0)
    {
       int i = TargetPickUpEnemies.Num() - 1;
-      UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
-
+      //UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
       if (TargetPickUpEnemies[i])
       {
-         TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
+         if (LockedOnEnemy)
+         {
+            TargetVector = LockedOnEnemy->GetActorLocation() - TargetPickUpEnemies[i]->GetActorLocation();
+            TargetVector.Normalize();
+         }
+
+         //TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
+         TargetPickUpEnemies[i]->FlingDownedEnemy(TargetVector);
          TargetPickUpEnemies.RemoveAt(i);
       }
    }
@@ -466,6 +473,7 @@ void AV2021CharacterBase::CameraLockOn()
       EnemyLocation = FVector(EnemyLocation.X, EnemyLocation.Y, 0.0f);
 
       FRotator NewCamRotation = UKismetMathLibrary::FindLookAtRotation(CamLocation, EnemyLocation);
+      NewCamRotation = FRotator(NewCamRotation.Pitch - 15.0f, NewCamRotation.Yaw, NewCamRotation.Roll);
       Controller->SetControlRotation(NewCamRotation);
    }
 }
