@@ -465,15 +465,19 @@ void AV2021CharacterBase::TurnOffLockedOnCamera()
 void AV2021CharacterBase::CameraLockOn()
 {
    FVector CamLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+   FVector CamWorldLocation = CamLocation;
    CamLocation = FVector(CamLocation.X, CamLocation.Y, 0.0f);
 
    if (LockedOnEnemy)
    {
       FVector EnemyLocation = LockedOnEnemy->GetActorLocation();
+      FVector EnemyWorldLocation = EnemyLocation;
       EnemyLocation = FVector(EnemyLocation.X, EnemyLocation.Y, 0.0f);
 
       FRotator NewCamRotation = UKismetMathLibrary::FindLookAtRotation(CamLocation, EnemyLocation);
-      NewCamRotation = FRotator(NewCamRotation.Pitch - 15.0f, NewCamRotation.Yaw, NewCamRotation.Roll);
+      FRotator PitchRotation = UKismetMathLibrary::FindLookAtRotation(CamWorldLocation, EnemyWorldLocation);
+      float rotatePitchValue = PitchRotation.Pitch;
+      NewCamRotation = FRotator(rotatePitchValue - 15.0f, NewCamRotation.Yaw, NewCamRotation.Roll);
       Controller->SetControlRotation(NewCamRotation);
    }
 }
