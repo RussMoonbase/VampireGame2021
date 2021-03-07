@@ -7,8 +7,12 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/DamageType.h"
+#include "Characters/V2021PlayerCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "VampireGameOld/Enemy.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
+
 
 // Sets default values
 ABulletBase::ABulletBase()
@@ -46,6 +50,20 @@ void ABulletBase::BeginPlay()
 	Super::BeginPlay();
 
 	DamageSphere->OnComponentBeginOverlap.AddDynamic(this, &ABulletBase::OnOverlapImpact);
+
+	AV2021PlayerCharacter* PlayerCharacter = Cast<AV2021PlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+	if (PlayerCharacter)
+	{
+		if (PlayerCharacter->GetLockedOnEnemy())
+		{
+			LockedOnEnemy = PlayerCharacter->GetLockedOnEnemy();
+		}
+	}
+	else
+	{
+		LockedOnEnemy = nullptr;
+	}
 	
 }
 
@@ -53,6 +71,13 @@ void ABulletBase::BeginPlay()
 void ABulletBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (LockedOnEnemy)
+	{
+		D("Bullet locked on working");
+		targetDistance = (LockedOnEnemy->GetActorLocation() - this->GetActorLocation()).SizeSquared();
+	}
+
 
 }
 

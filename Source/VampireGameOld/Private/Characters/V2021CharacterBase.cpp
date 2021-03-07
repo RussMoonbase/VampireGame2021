@@ -295,7 +295,7 @@ void AV2021CharacterBase::StartShoot()
    if (AnimInstance && ShootMontage)
    {
       AnimInstance->Montage_Play(ShootMontage, 1.25f);
-      AnimInstance->Montage_JumpToSection(FName("Shoot_1"), ShootMontage);
+      AnimInstance->Montage_JumpToSection(FName("Shoot_Arrow"), ShootMontage);
    }
 
    //if (EquippedFingerGun)
@@ -551,5 +551,14 @@ void AV2021CharacterBase::DeactivateSoulSphere(int EnemyNumber)
          SoulSphereMeshComp3->SetVisibility(false);
       }
    }
+}
+
+AEnemy* AV2021CharacterBase::GetLockedOnEnemy()
+{
+   if (LockedOnEnemy)
+   {
+      return LockedOnEnemy;
+   }
+   return nullptr;
 }
 

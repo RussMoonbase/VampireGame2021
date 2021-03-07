@@ -9,6 +9,7 @@
 class UStaticMeshComponent;
 class UProjectileMovementComponent;
 class USphereComponent;
+class AEnemy;
 
 UCLASS()
 class VAMPIREGAMEOLD_API ABulletBase : public AActor
@@ -36,7 +37,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Bullet")
 	void OnImpact(const FHitResult& Hit);
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -44,5 +45,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+private:
+	AEnemy* LockedOnEnemy;
+
+	float targetDistance;
 
 };

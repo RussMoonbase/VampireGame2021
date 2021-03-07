@@ -55,13 +55,13 @@ void AMeleeWeaponBase::TurnOffCollision()
 
 void AMeleeWeaponBase::ThrowSword(FVector direction)
 {
-   if (DamageBox)
-   {
-      DamageBox->SetEnableGravity(true);
-      DamageBox->SetSimulatePhysics(true);
-      DamageBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-      //DamageBox->AddForce(direction * 100000 * DamageBox->GetMass());
-   }
+   //if (DamageBox)
+   //{
+   //   DamageBox->SetEnableGravity(true);
+   //   DamageBox->SetSimulatePhysics(true);
+   //   DamageBox->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+   //   DamageBox->AddForce(direction * 100000 * DamageBox->GetMass());
+   //}
 }
 
 //void AMeleeWeaponBase::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

@@ -157,6 +157,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
 	UZTargetingSystem* TargetingSystemComp;
 
+	UFUNCTION()
+	AEnemy* GetLockedOnEnemy();
+
 
 private:
 	AFingerGun* EquippedFingerGun;
