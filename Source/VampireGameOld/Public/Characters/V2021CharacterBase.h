@@ -56,6 +56,7 @@ public:
 	void PickUpAttackButtonDown();
 	void PickUpAttackButtonUp();
 	void FlingAttackButtonDown();
+	void ThrowAttackButtonDown();
 	void StartShoot();
 	void StopShoot();
 	void ActivateTargetingSystem();

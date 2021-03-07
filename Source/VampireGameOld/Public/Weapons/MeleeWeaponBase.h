@@ -40,4 +40,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void TurnOffCollision();
+
+	UFUNCTION()
+	void ThrowSword(FVector direction);
 };

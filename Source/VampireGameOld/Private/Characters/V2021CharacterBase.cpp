@@ -83,6 +83,8 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
    PlayerInputComponent->BindAction(TEXT("FlingAttack"), IE_Pressed, this, &AV2021CharacterBase::FlingAttackButtonDown);
 
+   PlayerInputComponent->BindAction(TEXT("ThrowAttack"), IE_Pressed, this, &AV2021CharacterBase::ThrowAttackButtonDown);
+
    PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AV2021CharacterBase::StartShoot);
    PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AV2021CharacterBase::StopShoot);
 
@@ -276,6 +278,16 @@ void AV2021CharacterBase::FlingAttackButtonDown()
    }
 }
 
+void AV2021CharacterBase::ThrowAttackButtonDown()
+{
+   UnequipMeleeWeapon();
+
+   if (EquippedMeleeWeapon)
+   {
+      EquippedMeleeWeapon->ThrowSword(GetActorForwardVector());
+   }
+}
+
 void AV2021CharacterBase::StartShoot()
 {
    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -379,8 +391,9 @@ void AV2021CharacterBase::UnequipMeleeWeapon()
 {
    if (EquippedMeleeWeapon)
    {
-      EquippedMeleeWeapon->OnUnequipped();
-      EquippedMeleeWeapon->Destroy();
+      EquippedMeleeWeapon->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+      //EquippedMeleeWeapon->OnUnequipped();
+      //EquippedMeleeWeapon->Destroy();
    }
 }
 
