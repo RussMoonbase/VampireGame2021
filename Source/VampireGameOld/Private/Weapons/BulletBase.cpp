@@ -10,6 +10,7 @@
 #include "Characters/V2021PlayerCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "VampireGameOld/Enemy.h"
+#include "Weapons/BombBase.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
@@ -106,5 +107,16 @@ void ABulletBase::OnOverlapImpact(UPrimitiveComponent* OverlappedComponent, AAct
    UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, GetOwner(), UDamageType::StaticClass());
 
 	OnImpact(SweepResult);
+}
+
+void ABulletBase::SpawnMicroBombs()
+{
+	FTransform SpawnLocation = this->GetTransform();
+
+	for (int i = 0; i < 4; i++)
+	{
+		GetWorld()->SpawnActor<ABombBase>(MicroBomb, SpawnLocation);
+	}
+
 }
 

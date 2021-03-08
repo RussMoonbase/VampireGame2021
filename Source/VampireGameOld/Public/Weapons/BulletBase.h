@@ -10,6 +10,7 @@ class UStaticMeshComponent;
 class UProjectileMovementComponent;
 class USphereComponent;
 class AEnemy;
+class ABombBase;
 
 UCLASS()
 class VAMPIREGAMEOLD_API ABulletBase : public AActor
@@ -29,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bullet")
 	USphereComponent* DamageSphere;
 
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Bomb")
+   TSubclassOf<ABombBase> MicroBomb;
+
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Bullet")
    float Damage;
 
@@ -37,6 +41,9 @@ public:
 
    UFUNCTION()
    void OnOverlapImpact(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintCallable, Category = "Bullet")
+	void SpawnMicroBombs();
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Bullet")
 	void OnImpact(const FHitResult& Hit);
