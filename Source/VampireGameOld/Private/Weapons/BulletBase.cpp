@@ -64,7 +64,11 @@ void ABulletBase::BeginPlay()
 	{
 		LockedOnEnemy = nullptr;
 	}
-	
+
+	EnemyProximityDistance *= EnemyProximityDistance;
+	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Enemy Proximity Distance = %f"), EnemyProximityDistance));
+
+	bTargetReached = false;
 }
 
 // Called every frame
@@ -74,8 +78,18 @@ void ABulletBase::Tick(float DeltaTime)
 
 	if (LockedOnEnemy)
 	{
-		D("Bullet locked on working");
-		targetDistance = (LockedOnEnemy->GetActorLocation() - this->GetActorLocation()).SizeSquared();
+		FVector theEnemyVector = FVector(LockedOnEnemy->GetActorLocation().X, LockedOnEnemy->GetActorLocation().Y, 0.0f);
+		FVector theBulletVector = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, 0.0f);
+		//targetDistance = (LockedOnEnemy->GetActorLocation() - this->GetActorLocation()).SizeSquared();
+		targetDistance = (theEnemyVector - theBulletVector).SizeSquared();
+		//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Green, FString::Printf(TEXT("Bullet Distance to Target = %f"), targetDistance));
+
+		if (targetDistance < EnemyProximityDistance && !bTargetReached)
+		{
+			bTargetReached = true;
+			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Target reached")));
+			OnTargetReached(this->GetActorLocation());
+		}
 	}
 
 
