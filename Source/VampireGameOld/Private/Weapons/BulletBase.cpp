@@ -112,13 +112,13 @@ void ABulletBase::OnOverlapImpact(UPrimitiveComponent* OverlappedComponent, AAct
 
 void ABulletBase::SpawnMicroBombs()
 {
-	float radius = 1.0f;
+	float radius = 128.0f;
 	FTransform SpawnLocation = this->GetTransform();
 
 	for (int i = 0; i < 8; i++)
 	{
 		float angle = ((2 * UKismetMathLibrary::GetPI()) * i) / 8;
-		FVector spawnVector = FVector(UKismetMathLibrary::Cos(angle), UKismetMathLibrary::Sin(angle), this->GetActorLocation().Z);
+		FVector spawnVector = FVector(UKismetMathLibrary::Cos(angle), UKismetMathLibrary::Sin(angle), 0.0f);
 		FVector finalSpawnPosition = SpawnLocation.GetLocation() + spawnVector * radius;
 		FRotator theRotation = this->GetActorRotation();
 		GetWorld()->SpawnActor<ABombBase>(MicroBomb, finalSpawnPosition, theRotation);

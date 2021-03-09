@@ -25,6 +25,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb")
 	UStaticMeshComponent* MeshComp;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Bomb")
+	void OnHit(const FHitResult& Hit);
+
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Bomb")
 	//UProjectileMovementComponent* ProjectileMoveComp;
 
@@ -35,5 +38,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void OnImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 };

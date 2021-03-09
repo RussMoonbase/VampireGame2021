@@ -37,9 +37,12 @@ void ABombBase::BeginPlay()
 {
 	Super::BeginPlay();
    DamageSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+   DamageSphere->SetCollisionProfileName(TEXT("BlockAllDynamic"));
    DamageSphere->SetNotifyRigidBodyCollision(true);
    DamageSphere->SetEnableGravity(true);
    DamageSphere->SetSimulatePhysics(true);
+
+   DamageSphere->OnComponentHit.AddDynamic(this, &ABombBase::OnImpact);
 	
    //ProjectileMoveComp->Velocity = FVector(1.0f, 0.0f, 1.0f);
 }
@@ -49,5 +52,11 @@ void ABombBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ABombBase::OnImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+   OnHit(Hit);
+   //this->Destroy();
 }
 
