@@ -15,11 +15,9 @@ ABombBase::ABombBase()
    DamageSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DamageSphere"));
    SetRootComponent(DamageSphere);
 
-   DamageSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
    //DamageSphere->SetCollisionProfileName(TEXT("BlockAllDynamic"));
-   DamageSphere->SetNotifyRigidBodyCollision(true);
-   DamageSphere->SetEnableGravity(true);
-   DamageSphere->SetSimulatePhysics(true);
+
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
    MeshComp->SetupAttachment(DamageSphere);
@@ -38,6 +36,10 @@ ABombBase::ABombBase()
 void ABombBase::BeginPlay()
 {
 	Super::BeginPlay();
+   DamageSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+   DamageSphere->SetNotifyRigidBodyCollision(true);
+   DamageSphere->SetEnableGravity(true);
+   DamageSphere->SetSimulatePhysics(true);
 	
    //ProjectileMoveComp->Velocity = FVector(1.0f, 0.0f, 1.0f);
 }

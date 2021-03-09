@@ -11,6 +11,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "VampireGameOld/Enemy.h"
 #include "Weapons/BombBase.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
@@ -111,11 +112,16 @@ void ABulletBase::OnOverlapImpact(UPrimitiveComponent* OverlappedComponent, AAct
 
 void ABulletBase::SpawnMicroBombs()
 {
+	float radius = 1.0f;
 	FTransform SpawnLocation = this->GetTransform();
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 8; i++)
 	{
-		GetWorld()->SpawnActor<ABombBase>(MicroBomb, SpawnLocation);
+		float angle = ((2 * UKismetMathLibrary::GetPI()) * i) / 8;
+		FVector spawnVector = FVector(UKismetMathLibrary::Cos(angle), UKismetMathLibrary::Sin(angle), this->GetActorLocation().Z);
+		FVector finalSpawnPosition = SpawnLocation.GetLocation() + spawnVector * radius;
+		FRotator theRotation = this->GetActorRotation();
+		GetWorld()->SpawnActor<ABombBase>(MicroBomb, finalSpawnPosition, theRotation);
 	}
 
 }
