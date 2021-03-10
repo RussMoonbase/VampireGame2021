@@ -5,6 +5,10 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
+#include "DrawDebugHelpers.h"
+#include "Components/CapsuleComponent.h"
+
+#define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
 
 // Sets default values
 ABombBase::ABombBase()
@@ -43,7 +47,7 @@ void ABombBase::BeginPlay()
    DamageSphere->SetSimulatePhysics(true);
 
    DamageSphere->OnComponentHit.AddDynamic(this, &ABombBase::OnImpact);
-	
+   bBombHasHit = false;
    //ProjectileMoveComp->Velocity = FVector(1.0f, 0.0f, 1.0f);
 }
 
@@ -56,7 +60,46 @@ void ABombBase::Tick(float DeltaTime)
 
 void ABombBase::OnImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-   OnHit(Hit);
-   //this->Destroy();
+   if (!bBombHasHit)
+   {
+      bBombHasHit = true;
+      OnHit(Hit);
+      AddExplosiveForce();
+   }
+}
+
+void ABombBase::AddExplosiveForce()
+{
+   TArray<FHitResult> HitResults;
+
+   FVector BombLocation = GetActorLocation();
+
+   FVector Start = BombLocation;
+   FVector End = BombLocation;
+
+   FCollisionShape ExplosionSphere = FCollisionShape::MakeSphere(100.0f);
+
+   //DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionSphere.GetSphereRadius(), 50, FColor::Orange, true);
+
+   bool isHitBySweep = GetWorld()->SweepMultiByChannel(HitResults, Start, End, FQuat::Identity, ECC_WorldStatic, ExplosionSphere);
+
+   if (isHitBySweep)
+   {
+      for (FHitResult theHitResult : HitResults)
+      {
+         if (theHitResult.GetActor())
+         {
+            UCapsuleComponent* HitCapsuleComp = Cast<UCapsuleComponent>(theHitResult.GetActor()->GetRootComponent());
+
+            if (HitCapsuleComp)
+            {
+               D("Hit actor mesh");
+               HitCapsuleComp->SetSimulatePhysics(true);
+               HitCapsuleComp->AddRadialImpulse(GetActorLocation(), 300.0f, 100.0f, ERadialImpulseFalloff::RIF_Constant, true);
+            }
+         }
+
+      }
+   }
 }
 
