@@ -9,6 +9,7 @@
 #include "Characters/V2021PlayerCharacter.h"
 #include <Components/WidgetComponent.h>
 #include "Characters/TargetDot.h"
+#include "Components/BoxComponent.h"
 
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
@@ -24,6 +25,32 @@ AEnemy::AEnemy()
 	TargetWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("TargetDotComp"));
 	TargetWidgetComp->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
+	// create hit boxes
+	//HeadHitBox->CreateDefaultSubobject<UBoxComponent>(TEXT("HeadHitBox"));
+	//HeadHitBox->SetupAttachment(GetMesh(), FName("Head"));
+
+ //  BodyLeftHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BodyLeftHitBox"));
+ //  BodyRightHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BodyRightHitBox"));
+	//LeftUpperArmHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftUpperArmHitBox"));
+	//LeftLowerArmHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftLowerArmHitBox"));
+	//RightUpperArmHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightUpperArmHitBox"));
+	//RightLowerArmHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightLowerArmHitBox"));
+	//LeftUpperLegHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftUpperLegHitBox"));
+	//LeftLowerLegHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftLowerLegHitBox"));
+	//RightUpperLegHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightUpperLegHitBox"));
+	//RightLowerLegHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightLowerLegHitBox"));
+
+
+ //  BodyRightHitBox->SetupAttachment(GetMesh());
+ //  BodyLeftHitBox->SetupAttachment(GetMesh());
+ //  LeftUpperArmHitBox->SetupAttachment(GetMesh());
+ //  LeftLowerArmHitBox->SetupAttachment(GetMesh());
+ //  RightUpperArmHitBox->SetupAttachment(GetMesh());
+ //  RightLowerArmHitBox->SetupAttachment(GetMesh());
+ //  LeftUpperLegHitBox->SetupAttachment(GetMesh());
+ //  LeftLowerLegHitBox->SetupAttachment(GetMesh());
+ //  RightUpperLegHitBox->SetupAttachment(GetMesh());
+ //  RightLowerLegHitBox->SetupAttachment(GetMesh());
 }
 
 // Called when the game starts or when spawned

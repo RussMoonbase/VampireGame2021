@@ -10,6 +10,7 @@ class AV2021PlayerCharacter;
 class UWidgetComponent;
 //class UUserWidget;
 
+class UBoxComponent;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AEnemy : public ACharacter
@@ -64,6 +65,39 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UWidgetComponent* TargetWidgetComp;
+
+   //UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+   //UBoxComponent* HeadHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* BodyLeftHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* BodyRightHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* LeftUpperArmHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* LeftLowerArmHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* RightUpperArmHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* RightLowerArmHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* LeftUpperLegHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* LeftLowerLegHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* RightUpperLegHitBox;
+
+ //  UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HitBox")
+ //  UBoxComponent* RightLowerLegHitBox;
 
 private:
 	void FloatEnemy(float DeltaTime);
