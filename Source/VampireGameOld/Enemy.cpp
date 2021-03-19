@@ -10,6 +10,7 @@
 #include <Components/WidgetComponent.h>
 #include "Characters/TargetDot.h"
 #include "Components/BoxComponent.h"
+#include "Animation/AnimInstance.h"
 
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
@@ -24,33 +25,6 @@ AEnemy::AEnemy()
 
 	TargetWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("TargetDotComp"));
 	TargetWidgetComp->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-
-	// create hit boxes
-	//HeadHitBox->CreateDefaultSubobject<UBoxComponent>(TEXT("HeadHitBox"));
-	//HeadHitBox->SetupAttachment(GetMesh(), FName("Head"));
-
- //  BodyLeftHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BodyLeftHitBox"));
- //  BodyRightHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BodyRightHitBox"));
-	//LeftUpperArmHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftUpperArmHitBox"));
-	//LeftLowerArmHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftLowerArmHitBox"));
-	//RightUpperArmHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightUpperArmHitBox"));
-	//RightLowerArmHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightLowerArmHitBox"));
-	//LeftUpperLegHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftUpperLegHitBox"));
-	//LeftLowerLegHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LeftLowerLegHitBox"));
-	//RightUpperLegHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightUpperLegHitBox"));
-	//RightLowerLegHitBox = CreateDefaultSubobject<UBoxComponent>(TEXT("RightLowerLegHitBox"));
-
-
- //  BodyRightHitBox->SetupAttachment(GetMesh());
- //  BodyLeftHitBox->SetupAttachment(GetMesh());
- //  LeftUpperArmHitBox->SetupAttachment(GetMesh());
- //  LeftLowerArmHitBox->SetupAttachment(GetMesh());
- //  RightUpperArmHitBox->SetupAttachment(GetMesh());
- //  RightLowerArmHitBox->SetupAttachment(GetMesh());
- //  LeftUpperLegHitBox->SetupAttachment(GetMesh());
- //  LeftLowerLegHitBox->SetupAttachment(GetMesh());
- //  RightUpperLegHitBox->SetupAttachment(GetMesh());
- //  RightLowerLegHitBox->SetupAttachment(GetMesh());
 }
 
 // Called when the game starts or when spawned
@@ -156,12 +130,47 @@ bool AEnemy::GetbStartFloating()
 	return bStartFloating;
 }
 
+// set the visibility of the target dot when player turns on Z targeting
 void AEnemy::SetTargetDotVisibility(bool booleanValue)
 {
 	if (TargetWidgetComp)
 	{
 		TargetWidgetComp->SetVisibility(booleanValue);
 	}
+}
+
+// activate right side hit animation
+void AEnemy::RightSideHit()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && HitMontage)
+	{
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactFromRight"), HitMontage);
+	}
+}
+
+void AEnemy::FrontStomachHit()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && HitMontage)
+   {
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactFromFront"), HitMontage);
+   }
+}
+
+void AEnemy::TopHeadHit()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && HitMontage)
+   {
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactTopHead"), HitMontage);
+   }
 }
 
 void AEnemy::FloatEnemy(float DeltaTime)
