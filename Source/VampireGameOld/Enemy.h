@@ -69,6 +69,9 @@ public:
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
    UAnimMontage* HitMontage;
 
+   UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
+   UAnimMontage* DeathMontage;
+
 	UFUNCTION(BlueprintCallable, Category = "Hit Box")
 	void RightSideHit();
 
@@ -77,6 +80,12 @@ public:
 
    UFUNCTION(BlueprintCallable, Category = "Hit Box")
    void TopHeadHit();
+
+	UFUNCTION(BlueprintCallable, Category = "Death")
+	void PlayDeathAnimation();
+
+	UFUNCTION(BlueprintCallable, Category = "Death")
+	void EndOfDeath();
 
 private:
 	void FloatEnemy(float DeltaTime);

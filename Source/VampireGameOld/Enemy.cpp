@@ -173,6 +173,23 @@ void AEnemy::TopHeadHit()
    }
 }
 
+void AEnemy::PlayDeathAnimation()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance && DeathMontage)
+	{
+      AnimInstance->Montage_Play(DeathMontage, 1.0f);
+      AnimInstance->Montage_JumpToSection(FName("DeathFallBack"), DeathMontage);
+	}
+}
+
+void AEnemy::EndOfDeath()
+{
+	GetMesh()->bPauseAnims = true;
+	GetMesh()->bNoSkeletonUpdate = true;
+}
+
 void AEnemy::FloatEnemy(float DeltaTime)
 {
 	FVector NewLocation = GetActorLocation();
