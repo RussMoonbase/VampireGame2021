@@ -35,6 +35,7 @@ void AMeleeWeaponBase::OnOverlapImpact(UPrimitiveComponent* OverlappedComponent,
 
    D("Hit by sword!");
    UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, GetOwner(), UDamageType::StaticClass());
+   TurnOffCollision();
 }
 
 void AMeleeWeaponBase::OnOverlapImpactEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
