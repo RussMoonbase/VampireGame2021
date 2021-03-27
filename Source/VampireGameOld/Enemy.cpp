@@ -179,7 +179,6 @@ void AEnemy::PlayDeathAnimation()
 
 	if (AnimInstance && DeathMontage)
 	{
-		D("Death animation ready to play");
       AnimInstance->Montage_Play(DeathMontage, 1.0f);
       AnimInstance->Montage_JumpToSection(FName("DeathFallBack"), DeathMontage);
 	}
@@ -188,7 +187,7 @@ void AEnemy::PlayDeathAnimation()
 void AEnemy::EndOfDeath()
 {
 	GetMesh()->bPauseAnims = true;
-	//GetMesh()->bNoSkeletonUpdate = true;
+	GetMesh()->bNoSkeletonUpdate = true;
 }
 
 void AEnemy::FloatEnemy(float DeltaTime)
