@@ -187,7 +187,8 @@ void AEnemy::PlayDeathAnimation()
 void AEnemy::EndOfDeath()
 {
 	GetMesh()->bPauseAnims = true;
-	GetMesh()->bNoSkeletonUpdate = true;
+	//GetMesh()->bNoSkeletonUpdate = true;
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 }
 
 void AEnemy::FloatEnemy(float DeltaTime)
