@@ -79,27 +79,32 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::ActivateLevitate()
 {
 	D("Levitate called");
-	//if (CapsuleComp)
-	//{
+   if (CapsuleComp)
+   {
 	//	D("Found Capsule Component");
-	//	CapsuleComp->SetEnableGravity(false);
-	//	CapsuleComp->SetSimulatePhysics(false);
-	//	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CapsuleComp->SetEnableGravity(false);
+		CapsuleComp->SetSimulatePhysics(false);
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	//	FVector OriginalLocation = GetActorLocation();
 	//	OrginalZLocationBeforeLevitate = OriginalLocation.Z;
 	//	bStartFloating = true;
-	//}
-
-	if (GetMesh())
-	{
-		GetMesh()->SetEnableGravity(false);
-		GetMesh()->SetSimulatePhysics(false);
-		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		FVector OriginalLocation = GetMesh()->GetRelativeLocation();
-		OrginalZLocationBeforeLevitate = OriginalLocation.Z;
-		bStartFloating = true;
 	}
+	bIsDead = false;
+   PlayerCharacter = Cast<AV2021PlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+   if (GetMesh())
+   {
+      GetMesh()->SetVisibility(false);
+		GetMesh()->SetSimulatePhysics(false);
+      GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
+   }
+
+   if (PlayerCharacter)
+   {
+      PlayerCharacter->ActivateSoulSphere(EnemyLevitateNumber);
+      PlayerCharacter->EquipLevitatingEnemy(this);
+   }
 }
 
 void AEnemy::SetEnemyLevitateNumber(int theNum)
@@ -121,13 +126,20 @@ void AEnemy::FlingDownedEnemy(FVector ForwardVector)
    if (GetMesh())
    {
       GetMesh()->SetVisibility(true);
+      bIsLevitating = false;
+      GetMesh()->SetCollisionProfileName(TEXT("ShotRagdoll"));
+      GetMesh()->SetAllBodiesBelowSimulatePhysics(FName("Hips"), true);
+      GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(FName("Hips"), 1);
+      GetMesh()->AddForce(ForwardVector * 100000 * GetMesh()->GetMass());
    }
 
-	bIsLevitating = false;
-   CapsuleComp->SetEnableGravity(true);
-   CapsuleComp->SetSimulatePhysics(true);
-	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	CapsuleComp->AddForce(ForwardVector * 100000 * CapsuleComp->GetMass());
+
+
+	//bIsLevitating = false;
+ //  CapsuleComp->SetEnableGravity(true);
+ //  CapsuleComp->SetSimulatePhysics(true);
+	//CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	//CapsuleComp->AddForce(ForwardVector * 100000 * CapsuleComp->GetMass());
 }
 
 bool AEnemy::GetbCanBePickedUp()
@@ -196,7 +208,8 @@ void AEnemy::DeathRagdoll()
 
 	if (CapsuleComp)
 	{
-		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		CapsuleComp->SetCollisionObjectType(ECollisionChannel::ECC_Pawn);
 	}
 	bIsDead = true;
 }

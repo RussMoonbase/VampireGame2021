@@ -18,6 +18,7 @@
 #include "Player/HealthComponent.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
+#define Enemy ECollisionChannel::ECC_GameTraceChannel1
 
 // Sets default values
 AV2021CharacterBase::AV2021CharacterBase()
@@ -187,7 +188,7 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
    bIsPickingUp = true;
 
    TArray<TEnumAsByte<EObjectTypeQuery>> OverlappedActorsArray;
-   OverlappedActorsArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody));
+   OverlappedActorsArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
 
    TArray<AActor*> ignoreThis;
    ignoreThis.Init(this, 1);
@@ -203,7 +204,6 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
 
    for (AActor* outActor : outActors)
    {
-      D("Overlapped Actor");
       AEnemy* TempEnemy = Cast<AEnemy>(outActor);
 
       if (TempEnemy->FindComponentByClass<UHealthComponent>())
@@ -211,6 +211,7 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
          if (TempEnemy->FindComponentByClass<UHealthComponent>()->GetIsDead())
          {
             TargetPickUpEnemies.Add(TempEnemy);
+            D("Enemy added after pick up");
          }
       }
    }
@@ -221,8 +222,8 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
       if (targetPickUpEnemy)
       {
          ++EnemyCount;
-         targetPickUpEnemy->ActivateLevitate();
          targetPickUpEnemy->SetEnemyLevitateNumber(EnemyCount);
+         targetPickUpEnemy->ActivateLevitate();
       }
    }
 
@@ -451,6 +452,11 @@ void AV2021CharacterBase::EquipLevitatingEnemy(AEnemy* theEnemy)
    if (theEnemy)
    {
       theEnemy->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SoulMuzzleSocket);
+      
+      if (theEnemy->GetMesh())
+      {
+         theEnemy->GetMesh()->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetNotIncludingScale, SoulMuzzleSocket);
+      }
    }
 }
 
