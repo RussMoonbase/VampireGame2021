@@ -186,8 +186,8 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
 
    bIsPickingUp = true;
 
-   TArray<TEnumAsByte<EObjectTypeQuery>> OVerlappedActorsArray;
-   OVerlappedActorsArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+   TArray<TEnumAsByte<EObjectTypeQuery>> OverlappedActorsArray;
+   OverlappedActorsArray.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_PhysicsBody));
 
    TArray<AActor*> ignoreThis;
    ignoreThis.Init(this, 1);
@@ -198,7 +198,7 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
 
    FVector sphereSpawnLocation = GetActorLocation();
 
-   UKismetSystemLibrary::SphereOverlapActors(GetWorld(), sphereSpawnLocation, radius, OVerlappedActorsArray, AActor::StaticClass(), ignoreThis, outActors);
+   UKismetSystemLibrary::SphereOverlapActors(GetWorld(), sphereSpawnLocation, radius, OverlappedActorsArray, AActor::StaticClass(), ignoreThis, outActors);
    DrawDebugSphere(GetWorld(), GetActorLocation(), radius, 12, FColor::Red, true, 1.0f);
 
    for (AActor* outActor : outActors)
@@ -206,11 +206,6 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
       D("Overlapped Actor");
       AEnemy* TempEnemy = Cast<AEnemy>(outActor);
 
-      //if (TempEnemy->GetbCanBePickedUp())
-      //{
-      //   TempEnemy->SetbCanBePickedUp(false);
-      //   TargetPickUpEnemies.Add(TempEnemy);
-      //}
       if (TempEnemy->FindComponentByClass<UHealthComponent>())
       {
          if (TempEnemy->FindComponentByClass<UHealthComponent>()->GetIsDead())

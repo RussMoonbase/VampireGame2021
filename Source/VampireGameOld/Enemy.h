@@ -82,10 +82,13 @@ public:
    void TopHeadHit();
 
 	UFUNCTION(BlueprintCallable, Category = "Death")
-	void PlayDeathAnimation();
+	void DeathRagdoll();
 
 	UFUNCTION(BlueprintCallable, Category = "Death")
 	void EndOfDeath();
+
+	UFUNCTION()
+	void CapsuleFollowRagdoll();
 
 private:
 	void FloatEnemy(float DeltaTime);

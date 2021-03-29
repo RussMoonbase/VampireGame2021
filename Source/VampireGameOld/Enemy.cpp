@@ -56,6 +56,11 @@ void AEnemy::Tick(float DeltaTime)
 		FloatEnemy(DeltaTime);
 	}
 
+	if (bIsDead)
+	{
+		CapsuleFollowRagdoll();
+	}
+
    //if (bIsLevitating)
    //{
    //   Levitate(DeltaTime);
@@ -74,14 +79,24 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::ActivateLevitate()
 {
 	D("Levitate called");
-	if (CapsuleComp)
-	{
-		D("Found Capsule Component");
-		CapsuleComp->SetEnableGravity(false);
-		CapsuleComp->SetSimulatePhysics(false);
-		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//if (CapsuleComp)
+	//{
+	//	D("Found Capsule Component");
+	//	CapsuleComp->SetEnableGravity(false);
+	//	CapsuleComp->SetSimulatePhysics(false);
+	//	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-		FVector OriginalLocation = GetActorLocation();
+	//	FVector OriginalLocation = GetActorLocation();
+	//	OrginalZLocationBeforeLevitate = OriginalLocation.Z;
+	//	bStartFloating = true;
+	//}
+
+	if (GetMesh())
+	{
+		GetMesh()->SetEnableGravity(false);
+		GetMesh()->SetSimulatePhysics(false);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		FVector OriginalLocation = GetMesh()->GetRelativeLocation();
 		OrginalZLocationBeforeLevitate = OriginalLocation.Z;
 		bStartFloating = true;
 	}
@@ -173,22 +188,41 @@ void AEnemy::TopHeadHit()
    }
 }
 
-void AEnemy::PlayDeathAnimation()
+void AEnemy::DeathRagdoll()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetMesh()->SetAllBodiesBelowSimulatePhysics(FName("Hips"), true);
+	GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(FName("Hips"), 1);
 
-	if (AnimInstance && DeathMontage)
+	if (CapsuleComp)
 	{
-      AnimInstance->Montage_Play(DeathMontage, 1.0f);
-      AnimInstance->Montage_JumpToSection(FName("DeathFallBack"), DeathMontage);
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
+	bIsDead = true;
 }
 
 void AEnemy::EndOfDeath()
 {
 	GetMesh()->bPauseAnims = true;
 	//GetMesh()->bNoSkeletonUpdate = true;
+   //if (CapsuleComp)
+   //{
+   //	CapsuleComp->SetEnableGravity(false);
+   //	CapsuleComp->SetSimulatePhysics(false);
+   //	CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+   //}
+
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+}
+
+void AEnemy::CapsuleFollowRagdoll()
+{
+	if (GetMesh() && CapsuleComp)
+	{
+		FVector newCapsuleLocation = GetMesh()->GetSocketLocation(FName("Hips"));
+		newCapsuleLocation.Z = newCapsuleLocation.Z + 89.132126f;
+		CapsuleComp->SetWorldLocation(newCapsuleLocation);
+	}
 }
 
 void AEnemy::FloatEnemy(float DeltaTime)
