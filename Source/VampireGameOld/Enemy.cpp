@@ -5,13 +5,12 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "Characters/V2021PlayerCharacter.h"
 #include <Components/WidgetComponent.h>
 #include "Characters/TargetDot.h"
 #include "Components/BoxComponent.h"
 #include "Animation/AnimInstance.h"
-
+#include "GameFramework/DamageType.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
 // Sets default values
@@ -44,6 +43,7 @@ void AEnemy::BeginPlay()
 	// turn off target dot widget
 	TargetWidgetComp->SetVisibility(false);
 
+	//GetMesh()->OnComponentHit.AddDynamic(this, &AEnemy::OnRagdollImpact);
 }
 
 // Called every frame
@@ -117,6 +117,13 @@ void AEnemy::SetEnemyLevitateNumber(int theNum)
 
 void AEnemy::FlingDownedEnemy(FVector ForwardVector)
 {
+	bIsShotRagdoll = true;
+
+	if (bIsShotRagdoll)
+	{
+		OnShotByPlayer.Broadcast();
+	}
+
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->DeactivateSoulSphere(EnemyLevitateNumber);
@@ -125,6 +132,7 @@ void AEnemy::FlingDownedEnemy(FVector ForwardVector)
 
    if (GetMesh())
    {
+		//GetMesh()->OnComponentHit.AddDynamic(this, &AEnemy::OnRagdollImpact);
       GetMesh()->SetVisibility(true);
       bIsLevitating = false;
       GetMesh()->SetCollisionProfileName(TEXT("ShotRagdoll"));
@@ -228,6 +236,22 @@ void AEnemy::EndOfDeath()
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 }
 
+void AEnemy::RagdollHit(AActor* OtherActor)
+{
+	if (!OtherActor)
+	{
+		return;
+	}
+
+	UGameplayStatics::ApplyDamage(OtherActor, 300.0f, nullptr, GetOwner(), UDamageType::StaticClass());
+}
+
+// blueprint callable to be used to check if enemy was shot out as ragdoll
+bool AEnemy::GetIsShotRagdoll()
+{
+	return bIsShotRagdoll;
+}
+
 void AEnemy::CapsuleFollowRagdoll()
 {
 	if (GetMesh() && CapsuleComp)
@@ -237,6 +261,17 @@ void AEnemy::CapsuleFollowRagdoll()
 		CapsuleComp->SetWorldLocation(newCapsuleLocation);
 	}
 }
+
+//void AEnemy::OnRagdollImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+//{
+//	if (!OtherActor)
+//	{
+//		return;
+//	}
+//
+//   D("Hit by flying ragdoll!");
+//   UGameplayStatics::ApplyDamage(OtherActor, 300.0f, nullptr, GetOwner(), UDamageType::StaticClass());
+//}
 
 void AEnemy::FloatEnemy(float DeltaTime)
 {

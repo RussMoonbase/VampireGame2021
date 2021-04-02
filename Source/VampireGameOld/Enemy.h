@@ -12,6 +12,7 @@ class UWidgetComponent;
 class UBoxComponent;
 class UAnimMontage;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShotByPlayer);
 UCLASS()
 class VAMPIREGAMEOLD_API AEnemy : public ACharacter
 {
@@ -87,8 +88,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Death")
 	void EndOfDeath();
 
+	UFUNCTION(BlueprintCallable, Category = "Ragdoll")
+	void RagdollHit(AActor* OtherActor);
+
+	UFUNCTION(BlueprintCallable, Category = "Ragdoll")
+	bool GetIsShotRagdoll();
+
 	UFUNCTION()
 	void CapsuleFollowRagdoll();
+
+	UPROPERTY(BlueprintAssignable, Category = "Ragdoll")
+	FOnShotByPlayer OnShotByPlayer;
 
 private:
 	void FloatEnemy(float DeltaTime);
@@ -110,5 +120,7 @@ private:
 	FVector AxisVector;
 
 	FVector Dimensions;
+
+	bool bIsShotRagdoll;
 
 };
