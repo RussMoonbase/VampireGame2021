@@ -21,7 +21,7 @@ void AShotOutRagdollEnemyBase::BeginPlay()
 
 	if (SkeletalMeshComp)
 	{
-		SkeletalMeshComp->SetCollisionProfileName(TEXT("ShotRagdoll"));
+		//SkeletalMeshComp->SetCollisionProfileName(TEXT("ShotRagdoll"));
       SkeletalMeshComp->SetAllBodiesBelowSimulatePhysics(FName("Hips"), true);
       SkeletalMeshComp->SetAllBodiesBelowPhysicsBlendWeight(FName("Hips"), 1);
 	}
