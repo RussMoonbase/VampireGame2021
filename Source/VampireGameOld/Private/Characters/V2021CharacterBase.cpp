@@ -16,6 +16,7 @@
 #include "Player/ZTargetingSystem.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/HealthComponent.h"
+#include "Weapons/SoulGun.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 #define Enemy ECollisionChannel::ECC_GameTraceChannel1
@@ -268,7 +269,11 @@ void AV2021CharacterBase::FlingAttackButtonDown()
          }
 
          //TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
-         TargetPickUpEnemies[i]->FlingDownedEnemy(TargetVector);
+         //TargetPickUpEnemies[i]->FlingDownedEnemy(TargetVector);
+         if (EquippedSoulGun)
+         {
+            EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
+         }
          TargetPickUpEnemies.RemoveAt(i);
       }
    }
@@ -561,5 +566,30 @@ AEnemy* AV2021CharacterBase::GetLockedOnEnemy()
       return LockedOnEnemy;
    }
    return nullptr;
+}
+
+ASoulGun* AV2021CharacterBase::GetEquippedSoulGun()
+{
+   return EquippedSoulGun;
+}
+
+ASoulGun* AV2021CharacterBase::EquipSoulGun(TSubclassOf<ASoulGun> NewSoulGun)
+{
+   FActorSpawnParameters Params;
+   Params.Owner = this;
+   Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+   EquippedSoulGun = GetWorld()->SpawnActor<ASoulGun>(NewSoulGun, Params);
+
+   if (EquippedSoulGun)
+   {
+      EquippedSoulGun->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, SoulMuzzleSocket);
+      return EquippedSoulGun;
+   }
+   return nullptr;
+}
+
+void AV2021CharacterBase::UnequipSoulGun()
+{
+
 }
 

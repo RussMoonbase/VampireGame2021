@@ -15,6 +15,7 @@ class UAnimMontage;
 class AEnemy;
 class UStaticMeshComponent;
 class UZTargetingSystem;
+class ASoulGun;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AV2021CharacterBase : public ACharacter
@@ -160,11 +161,21 @@ public:
 	UFUNCTION()
 	AEnemy* GetLockedOnEnemy();
 
+   UFUNCTION(BlueprintPure, Category = "Weapons")
+   ASoulGun* GetEquippedSoulGun();
+
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   ASoulGun* EquipSoulGun(TSubclassOf<ASoulGun> NewSoulGun);
+
+   UFUNCTION(BlueprintCallable, Category = "Weapons")
+   void UnequipSoulGun();
 
 private:
 	AFingerGun* EquippedFingerGun;
 
 	AMeleeWeaponBase* EquippedMeleeWeapon;
+
+	ASoulGun* EquippedSoulGun;
 
 	bool bAcceptsAttack3Input;
 
