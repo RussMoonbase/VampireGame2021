@@ -81,14 +81,9 @@ void AEnemy::ActivateLevitate()
 	D("Levitate called");
    if (CapsuleComp)
    {
-	//	D("Found Capsule Component");
 		CapsuleComp->SetEnableGravity(false);
 		CapsuleComp->SetSimulatePhysics(false);
 		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
-	//	FVector OriginalLocation = GetActorLocation();
-	//	OrginalZLocationBeforeLevitate = OriginalLocation.Z;
-	//	bStartFloating = true;
 	}
 	bIsDead = false;
    PlayerCharacter = Cast<AV2021PlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
@@ -103,8 +98,10 @@ void AEnemy::ActivateLevitate()
    if (PlayerCharacter)
    {
       PlayerCharacter->ActivateSoulSphere(EnemyLevitateNumber);
-      PlayerCharacter->EquipLevitatingEnemy(this);
+      //PlayerCharacter->EquipLevitatingEnemy(this);
    }
+
+	Destroy();
 }
 
 void AEnemy::SetEnemyLevitateNumber(int theNum)

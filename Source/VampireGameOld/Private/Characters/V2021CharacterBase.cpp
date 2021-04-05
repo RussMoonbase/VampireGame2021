@@ -58,6 +58,7 @@ void AV2021CharacterBase::BeginPlay()
 	
    AnimMontageMeleeSectionNum = 1;
    bIsPickingUp = false;
+   EnemyCount = 0;
 }
 
 // Called every frame
@@ -217,7 +218,7 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
       }
    }
 
-   int EnemyCount = 0;
+   //int EnemyCount = 0;
    for (AEnemy* targetPickUpEnemy : TargetPickUpEnemies)
    {
       if (targetPickUpEnemy)
@@ -255,28 +256,45 @@ void AV2021CharacterBase::FlingAttackButtonDown()
 
    //FVector PlayerForwardVector = GetActorForwardVector();
    FVector TargetVector = GetActorForwardVector();
-   
-   if (TargetPickUpEnemies.Num() > 0)
-   {
-      int i = TargetPickUpEnemies.Num() - 1;
-      //UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
-      if (TargetPickUpEnemies[i])
-      {
-         if (LockedOnEnemy)
-         {
-            TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
-            TargetVector.Normalize();
-         }
 
-         //TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
-         //TargetPickUpEnemies[i]->FlingDownedEnemy(TargetVector);
-         if (EquippedSoulGun)
-         {
-            EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
-         }
-         TargetPickUpEnemies.RemoveAt(i);
+
+
+   if (EnemyCount > 0)
+   {
+      if (LockedOnEnemy)
+      {
+         TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
+         TargetVector.Normalize();
       }
+
+      if (EquippedSoulGun)
+      {
+         EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
+      }
+      --EnemyCount;
    }
+   
+   //if (TargetPickUpEnemies.Num() > 0)
+   //{
+   //   int i = TargetPickUpEnemies.Num() - 1;
+   //   //UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
+   //   if (TargetPickUpEnemies[i])
+   //   {
+   //      if (LockedOnEnemy)
+   //      {
+   //         TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
+   //         TargetVector.Normalize();
+   //      }
+
+   //      //TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
+   //      //TargetPickUpEnemies[i]->FlingDownedEnemy(TargetVector);
+   //      if (EquippedSoulGun)
+   //      {
+   //         EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
+   //      }
+   //      TargetPickUpEnemies.RemoveAt(i);
+   //   }
+   //}
 }
 
 void AV2021CharacterBase::ThrowAttackButtonDown()

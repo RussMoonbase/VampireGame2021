@@ -3,6 +3,10 @@
 
 #include "Weapons/ShotOutRagdollEnemyBase.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Components/BoxComponent.h"
+
+#define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
 // Sets default values
 AShotOutRagdollEnemyBase::AShotOutRagdollEnemyBase()
@@ -26,6 +30,7 @@ void AShotOutRagdollEnemyBase::BeginPlay()
       SkeletalMeshComp->SetAllBodiesBelowPhysicsBlendWeight(FName("Hips"), 1);
 	}
 	
+	bHitSucceeded = false;
 }
 
 // Called every frame
@@ -39,7 +44,32 @@ void AShotOutRagdollEnemyBase::FlingRadgoll(FVector ShootVector)
 {
 	if (SkeletalMeshComp)
 	{
-		SkeletalMeshComp->AddForce(ShootVector * 100000 * SkeletalMeshComp->GetMass());
+		SkeletalMeshComp->AddForce(ShootVector * ShotSpeed * SkeletalMeshComp->GetMass());
 	}
 }
 
+void AShotOutRagdollEnemyBase::AddDamage(AActor* OtherActor)
+{
+	if (!OtherActor)
+	{
+		return;
+	}
+
+	if (!bHitSucceeded)
+	{
+		bHitSucceeded = true;
+      UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, GetOwner(), UDamageType::StaticClass());
+      TurnOffCollision();
+	}
+}
+
+void AShotOutRagdollEnemyBase::TurnOffCollision()
+{
+	if (DamageBoxes.Num() > 0)
+	{
+		for (UBoxComponent* aBox : DamageBoxes)
+		{
+			D("DAMAGE BOX COLLISION TURNED OFF");
+		}
+	}
+}

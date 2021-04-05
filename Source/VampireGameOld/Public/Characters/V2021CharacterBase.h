@@ -198,4 +198,6 @@ private:
 	TArray<AEnemy*> TargetPickUpEnemies;
 
 	void CameraLockOn();
+
+	int EnemyCount;
 };

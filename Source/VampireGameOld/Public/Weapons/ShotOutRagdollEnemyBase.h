@@ -7,6 +7,7 @@
 #include "ShotOutRagdollEnemyBase.generated.h"
 
 class USkeletalMeshComponent;
+class UBoxComponent;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AShotOutRagdollEnemyBase : public AActor
@@ -25,10 +26,28 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Enemy")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ragdoll")
 	USkeletalMeshComponent* SkeletalMeshComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Ragdoll")
+	TArray<UBoxComponent*> DamageBoxes;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ragdoll")
+	float Damage = 100.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Ragdoll")
+	float ShotSpeed = 100000;
 
 	UFUNCTION()
 	void FlingRadgoll(FVector ShootVector);
+
+	UFUNCTION(BlueprintCallable)
+	void AddDamage(AActor* OtherActor);
+
+	UFUNCTION(BlueprintCallable)
+	void TurnOffCollision();
+
+private:
+	bool bHitSucceeded;
 
 };
