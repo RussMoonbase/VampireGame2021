@@ -266,12 +266,22 @@ void AV2021CharacterBase::FlingAttackButtonDown()
          TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
          TargetVector.Normalize();
       }
+      else
+      {
+         TargetVector = GetActorForwardVector();
+      }
 
       if (EquippedSoulGun)
       {
          EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
       }
       --EnemyCount;
+
+      if (TargetingSystemComp)
+      {
+         TargetingSystemComp->TurnOffLockOnTarget();
+         TurnOffLockedOnCamera();
+      }
    }
    
    //if (TargetPickUpEnemies.Num() > 0)
