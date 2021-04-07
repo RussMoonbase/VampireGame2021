@@ -82,6 +82,12 @@ public:
    UFUNCTION(BlueprintCallable, Category = "Hit Box")
    void TopHeadHit();
 
+   UFUNCTION(BlueprintCallable, Category = "Hit Box")
+   void LeftLegHit();
+
+   UFUNCTION(BlueprintCallable, Category = "Hit Box")
+   void RightLegHit();
+
 	UFUNCTION(BlueprintCallable, Category = "Death")
 	void DeathRagdoll();
 
@@ -99,6 +105,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Ragdoll")
 	FOnShotByPlayer OnShotByPlayer;
+
+	UFUNCTION()
+	void RemoveFromScene();
 
 private:
 	void FloatEnemy(float DeltaTime);

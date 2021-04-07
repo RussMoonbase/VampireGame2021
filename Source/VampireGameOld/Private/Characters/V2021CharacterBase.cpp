@@ -208,26 +208,29 @@ void AV2021CharacterBase::PickUpAttackButtonDown()
    {
       AEnemy* TempEnemy = Cast<AEnemy>(outActor);
 
-      if (TempEnemy->FindComponentByClass<UHealthComponent>())
+      if (TempEnemy && TempEnemy->FindComponentByClass<UHealthComponent>())
       {
          if (TempEnemy->FindComponentByClass<UHealthComponent>()->GetIsDead())
          {
-            TargetPickUpEnemies.Add(TempEnemy);
+            ++EnemyCount;
+            ActivateSoulSphere(EnemyCount);
+            TempEnemy->RemoveFromScene();
+            //TargetPickUpEnemies.Add(TempEnemy);
             D("Enemy added after pick up");
          }
       }
    }
 
    //int EnemyCount = 0;
-   for (AEnemy* targetPickUpEnemy : TargetPickUpEnemies)
-   {
-      if (targetPickUpEnemy)
-      {
-         ++EnemyCount;
-         targetPickUpEnemy->SetEnemyLevitateNumber(EnemyCount);
-         targetPickUpEnemy->ActivateLevitate();
-      }
-   }
+   //for (AEnemy* targetPickUpEnemy : TargetPickUpEnemies)
+   //{
+   //   if (targetPickUpEnemy)
+   //   {
+   //      ++EnemyCount;
+   //      targetPickUpEnemy->SetEnemyLevitateNumber(EnemyCount);
+   //      targetPickUpEnemy->ActivateLevitate();
+   //   }
+   //}
 
    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
@@ -276,6 +279,7 @@ void AV2021CharacterBase::FlingAttackButtonDown()
          EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
       }
       --EnemyCount;
+      DeactivateSoulSphere(EnemyCount);
 
       if (TargetingSystemComp)
       {

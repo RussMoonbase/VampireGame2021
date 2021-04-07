@@ -100,8 +100,6 @@ void AEnemy::ActivateLevitate()
       PlayerCharacter->ActivateSoulSphere(EnemyLevitateNumber);
       //PlayerCharacter->EquipLevitatingEnemy(this);
    }
-
-	Destroy();
 }
 
 void AEnemy::SetEnemyLevitateNumber(int theNum)
@@ -205,6 +203,28 @@ void AEnemy::TopHeadHit()
    }
 }
 
+void AEnemy::LeftLegHit()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && HitMontage)
+   {
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactLeftLeg"), HitMontage);
+   }
+}
+
+void AEnemy::RightLegHit()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && HitMontage)
+   {
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactRightLeg"), HitMontage);
+   }
+}
+
 void AEnemy::DeathRagdoll()
 {
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
@@ -257,6 +277,11 @@ void AEnemy::CapsuleFollowRagdoll()
 		newCapsuleLocation.Z = newCapsuleLocation.Z + 89.132126f;
 		CapsuleComp->SetWorldLocation(newCapsuleLocation);
 	}
+}
+
+void AEnemy::RemoveFromScene()
+{
+	Destroy();
 }
 
 //void AEnemy::OnRagdollImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
