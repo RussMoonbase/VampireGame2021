@@ -181,7 +181,6 @@ void AV2021CharacterBase::MeleeAttack()
 
 void AV2021CharacterBase::PickUpAttackButtonDown()
 {
-
    if (bIsPickingUp)
    {
       return;
@@ -623,5 +622,10 @@ ASoulGun* AV2021CharacterBase::EquipSoulGun(TSubclassOf<ASoulGun> NewSoulGun)
 void AV2021CharacterBase::UnequipSoulGun()
 {
 
+}
+
+UCameraComponent* AV2021CharacterBase::GetPlayerCameraComponent()
+{
+   return TheCameraComp;
 }
 

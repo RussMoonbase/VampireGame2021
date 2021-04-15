@@ -40,6 +40,7 @@ public:
 
 private:
 	float closestTargetDistance;
+	float highestLookDotProduct;
 
 	AActor* lockedTargetActor;
 	AEnemy* lockedTargetEnemy;

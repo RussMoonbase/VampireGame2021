@@ -9,6 +9,7 @@
 #include "Math/Vector.h"
 #include "Math/NumericLimits.h"
 #include "Player/HealthComponent.h"
+#include "Camera/CameraComponent.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
@@ -80,15 +81,32 @@ void UZTargetingSystem::LockOnTarget()
    DrawDebugSphere(GetWorld(), sphereSpawnLocation, targetSphereRadius, 12, FColor::Yellow, true, -1.0f);
 
    closestTargetDistance = TNumericLimits<float>::Max();
+   highestLookDotProduct = -3.0f;
    for (AActor* outActor : outActors)
    {
       float targetDistance = (outActor->GetActorLocation() - PlayerCharacter->GetActorLocation()).SizeSquared();
+      FVector cameraForwardVector;
+      FVector targetVector;
+      if (PlayerCharacter->GetPlayerCameraComponent())
+      {
+         cameraForwardVector = PlayerCharacter->GetPlayerCameraComponent()->GetForwardVector();
+         targetVector = outActor->GetActorLocation() - PlayerCharacter->GetActorLocation();
+         cameraForwardVector.Normalize();
+         targetVector.Normalize();
+      }
+      
+      float lookDotAmount = FVector::DotProduct(cameraForwardVector, targetVector);
 
       if (outActor->FindComponentByClass<UHealthComponent>())
       {
          bool isDead = outActor->FindComponentByClass<UHealthComponent>()->GetIsDead();
-         if (targetDistance < closestTargetDistance && !isDead)
+         if ((lookDotAmount > highestLookDotProduct) /*&& (targetDistance < closestTargetDistance)*/ && !isDead)
          {
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Highhest Dot Product Enemy Name = %s"), *outActor->GetName()));
+            GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Dot Product Percent = %f"), lookDotAmount));
+
+
+            highestLookDotProduct = lookDotAmount;
             closestTargetDistance = targetDistance;
             lockedTargetActor = outActor;
          }

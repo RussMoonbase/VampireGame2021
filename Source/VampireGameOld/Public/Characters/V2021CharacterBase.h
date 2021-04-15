@@ -170,6 +170,9 @@ public:
    UFUNCTION(BlueprintCallable, Category = "Weapons")
    void UnequipSoulGun();
 
+	UFUNCTION()
+	UCameraComponent* GetPlayerCameraComponent();
+
 private:
 	AFingerGun* EquippedFingerGun;
 
