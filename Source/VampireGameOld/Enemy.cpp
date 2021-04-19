@@ -228,8 +228,8 @@ void AEnemy::RightLegHit()
 void AEnemy::DeathRagdoll()
 {
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->SetAllBodiesBelowSimulatePhysics(FName("Hips"), true);
-	GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(FName("Hips"), 1);
+	GetMesh()->SetAllBodiesBelowSimulatePhysics(FName("Root"), true);
+	GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(FName("Root"), 1);
 
 	if (CapsuleComp)
 	{
