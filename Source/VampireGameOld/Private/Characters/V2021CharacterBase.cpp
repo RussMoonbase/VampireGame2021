@@ -257,7 +257,7 @@ void AV2021CharacterBase::FlingAttackButtonDown()
    }
 
    //FVector PlayerForwardVector = GetActorForwardVector();
-   FVector TargetVector = GetActorForwardVector();
+   FVector TargetVector = FVector::ZeroVector;
 
 
 
@@ -265,7 +265,10 @@ void AV2021CharacterBase::FlingAttackButtonDown()
    {
       if (LockedOnEnemy)
       {
-         TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
+         //TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
+         D("entered target vector for locked on enemy");
+         FName EnemySocketTarget = "EnemyFlingTarget";
+         TargetVector = LockedOnEnemy->GetMesh()->GetSocketLocation(EnemySocketTarget) - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
          TargetVector.Normalize();
       }
       else
