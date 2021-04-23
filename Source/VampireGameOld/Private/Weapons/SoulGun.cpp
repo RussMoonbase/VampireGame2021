@@ -35,9 +35,9 @@ void ASoulGun::Tick(float DeltaTime)
 
 }
 
-void ASoulGun::FireSpawnedRagdollBullet(FVector targetVector)
+void ASoulGun::FireSpawnedRagdollBullet(FVector targetVector, FTransform socketLocation)
 {
-	const FTransform SpawnTransform = GunMuzzleArrow->GetComponentTransform();
+   const FTransform SpawnTransform = GunMuzzleArrow->GetComponentTransform();
 
    FActorSpawnParameters Params;
    Params.Owner = GetOwner();

@@ -31,7 +31,7 @@ public:
 	float shootSpeed;
 
 	UFUNCTION()
-	void FireSpawnedRagdollBullet(FVector targetVector);
+	void FireSpawnedRagdollBullet(FVector targetVector, FTransform socketLocation);
 
 protected:
 	// Called when the game starts or when spawned

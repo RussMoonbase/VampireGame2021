@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/BoxComponent.h"
+#include "Components/SphereComponent.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
@@ -14,7 +15,12 @@ AShotOutRagdollEnemyBase::AShotOutRagdollEnemyBase()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//SphereComp = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComp"));
+	//SetRootComponent(SphereComp);
+
 	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComp"));
+	//SkeletalMeshComp->SetupAttachment(GetRootComponent());
+
 	SetRootComponent(SkeletalMeshComp);
 }
 
@@ -42,10 +48,14 @@ void AShotOutRagdollEnemyBase::Tick(float DeltaTime)
 
 void AShotOutRagdollEnemyBase::FlingRadgoll(FVector ShootVector)
 {
-	if (SkeletalMeshComp)
-	{
-		SkeletalMeshComp->AddForce(ShootVector * ShotSpeed * SkeletalMeshComp->GetMass());
-	}
+   if (SkeletalMeshComp)
+   {
+      SkeletalMeshComp->AddForce(ShootVector * ShotSpeed * SkeletalMeshComp->GetMass());
+   }
+	//if (SphereComp)
+	//{
+	//	SphereComp->AddForce(ShootVector * ShotSpeed * SphereComp->GetMass());
+	//}
 }
 
 void AShotOutRagdollEnemyBase::AddDamage(AActor* OtherActor)

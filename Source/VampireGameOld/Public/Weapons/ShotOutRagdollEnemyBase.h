@@ -8,6 +8,7 @@
 
 class USkeletalMeshComponent;
 class UBoxComponent;
+class USphereComponent;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AShotOutRagdollEnemyBase : public AActor
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ragdoll")
 	USkeletalMeshComponent* SkeletalMeshComp;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ragdoll")
+	//USphereComponent* SphereComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Ragdoll")
 	TArray<UBoxComponent*> DamageBoxes;

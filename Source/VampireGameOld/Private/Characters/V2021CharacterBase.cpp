@@ -17,6 +17,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/HealthComponent.h"
 #include "Weapons/SoulGun.h"
+#include "Math/UnrealMathUtility.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 #define Enemy ECollisionChannel::ECC_GameTraceChannel1
@@ -266,10 +267,6 @@ void AV2021CharacterBase::FlingAttackButtonDown()
       if (LockedOnEnemy)
       {
          TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
-         //TargetVector = LockedOnEnemy->GetActorLocation() - GetActorLocation();
-         D("entered target vector for locked on enemy");
-         //FName EnemySocketTarget = "EnemyFlingTarget";
-         //TargetVector = LockedOnEnemy->GetMesh()->GetSocketLocation(EnemySocketTarget) - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
          TargetVector.Normalize();
       }
       else
@@ -279,7 +276,7 @@ void AV2021CharacterBase::FlingAttackButtonDown()
 
       if (EquippedSoulGun)
       {
-         EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
+         EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector, GetMesh()->GetSocketTransform(SoulMuzzleSocket));
       }
       --EnemyCount;
       DeactivateSoulSphere(EnemyCount);
@@ -531,6 +528,8 @@ void AV2021CharacterBase::CameraLockOn()
       FRotator NewCamRotation = UKismetMathLibrary::FindLookAtRotation(CamLocation, EnemyLocation);
       FRotator PitchRotation = UKismetMathLibrary::FindLookAtRotation(CamWorldLocation, EnemyWorldLocation);
       float rotatePitchValue = PitchRotation.Pitch;
+      rotatePitchValue = FMath::Clamp(rotatePitchValue, -30.0f, 30.0f);
+      //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("rotate Pitch Value for lock on Camera = %f"), rotatePitchValue));
       NewCamRotation = FRotator(rotatePitchValue - 15.0f, NewCamRotation.Yaw, NewCamRotation.Roll);
       Controller->SetControlRotation(NewCamRotation);
    }
