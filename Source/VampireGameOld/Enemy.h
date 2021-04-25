@@ -109,6 +109,9 @@ public:
 	UFUNCTION()
 	void RemoveFromScene();
 
+	UFUNCTION()
+	USkeletalMeshComponent* GetEnemySkeletalMesh();
+
 private:
 	void FloatEnemy(float DeltaTime);
 

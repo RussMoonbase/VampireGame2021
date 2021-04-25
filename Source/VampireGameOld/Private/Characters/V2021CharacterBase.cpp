@@ -328,11 +328,13 @@ void AV2021CharacterBase::ThrowAttackButtonDown()
 void AV2021CharacterBase::StartShoot()
 {
    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+   D("Shoot Button Pressed");
 
    if (AnimInstance && ShootMontage)
    {
-      AnimInstance->Montage_Play(ShootMontage, 1.25f);
-      AnimInstance->Montage_JumpToSection(FName("ShootBullet"), ShootMontage);
+      D("Shoot Montage Played");
+      AnimInstance->Montage_Play(ShootMontage, 0.85f);
+      AnimInstance->Montage_JumpToSection(FName("Blast"), ShootMontage);
    }
 
    //if (EquippedFingerGun)
@@ -661,4 +663,6 @@ bool AV2021CharacterBase::GetIsDodgeDashing()
 {
    return IsDodgeDashing;
 }
+
+
 
