@@ -60,6 +60,7 @@ void AV2021CharacterBase::BeginPlay()
    AnimMontageMeleeSectionNum = 1;
    bIsPickingUp = false;
    EnemyCount = 0;
+   IsDodgeDashing = false;
 }
 
 // Called every frame
@@ -93,6 +94,8 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
    PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AV2021CharacterBase::StopShoot);
 
    PlayerInputComponent->BindAction(TEXT("ZTargeting"), IE_Pressed, this, &AV2021CharacterBase::ActivateTargetingSystem);
+
+   PlayerInputComponent->BindAction(TEXT("Dodge"), IE_Pressed, this, &AV2021CharacterBase::DodgeButtonDown);
 }
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
@@ -278,8 +281,9 @@ void AV2021CharacterBase::FlingAttackButtonDown()
       {
          EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector, GetMesh()->GetSocketTransform(SoulMuzzleSocket));
       }
-      --EnemyCount;
+
       DeactivateSoulSphere(EnemyCount);
+      --EnemyCount;
 
       if (TargetingSystemComp)
       {
@@ -328,7 +332,7 @@ void AV2021CharacterBase::StartShoot()
    if (AnimInstance && ShootMontage)
    {
       AnimInstance->Montage_Play(ShootMontage, 1.25f);
-      AnimInstance->Montage_JumpToSection(FName("Shoot_Arrow"), ShootMontage);
+      AnimInstance->Montage_JumpToSection(FName("ShootBullet"), ShootMontage);
    }
 
    //if (EquippedFingerGun)
@@ -358,6 +362,20 @@ void AV2021CharacterBase::ActivateTargetingSystem()
          TurnOffLockedOnCamera();
       }
 
+   }
+}
+
+void AV2021CharacterBase::DodgeButtonDown()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (!IsDodgeDashing)
+   {
+      if (AnimInstance && DodgeDashMontage)
+      {
+         AnimInstance->Montage_Play(DodgeDashMontage, 1.15f);
+         AnimInstance->Montage_JumpToSection(FName("ForwardDash"), DodgeDashMontage);
+      }
    }
 }
 
@@ -538,6 +556,7 @@ void AV2021CharacterBase::CameraLockOn()
 void AV2021CharacterBase::ActivateSoulSphere(int EnemyNumber)
 {
    D("Activate SOUL SPHERE!");
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("EnemyNumber in Activate = %i"), EnemyNumber));
 
    if (EnemyNumber == 1)
    {
@@ -567,6 +586,7 @@ void AV2021CharacterBase::ActivateSoulSphere(int EnemyNumber)
 void AV2021CharacterBase::DeactivateSoulSphere(int EnemyNumber)
 {
    D("Deactivate SOUL SPHERE!");
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("EnemyNumber in Deactivate = %i"), EnemyNumber));
 
    if (EnemyNumber == 1)
    {
@@ -630,5 +650,15 @@ void AV2021CharacterBase::UnequipSoulGun()
 UCameraComponent* AV2021CharacterBase::GetPlayerCameraComponent()
 {
    return TheCameraComp;
+}
+
+void AV2021CharacterBase::SetIsDodgeDashing(bool booleanValue)
+{
+   IsDodgeDashing = booleanValue;
+}
+
+bool AV2021CharacterBase::GetIsDodgeDashing()
+{
+   return IsDodgeDashing;
 }
 

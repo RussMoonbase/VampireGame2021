@@ -61,6 +61,7 @@ public:
 	void StartShoot();
 	void StopShoot();
 	void ActivateTargetingSystem();
+	void DodgeButtonDown();
 
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
    UAnimMontage* MeleeMontage;
@@ -70,6 +71,9 @@ public:
 
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
    UAnimMontage* ShootMontage;
+
+   UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
+   UAnimMontage* DodgeDashMontage;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Vampire2021")
 	float BaseTurnSpeed = 10.0;
@@ -173,6 +177,12 @@ public:
 	UFUNCTION()
 	UCameraComponent* GetPlayerCameraComponent();
 
+	UFUNCTION(BlueprintCallable, Category = "Powers")
+	void SetIsDodgeDashing(bool booleanValue);
+
+	UFUNCTION(BlueprintCallable, Category = "Powers")
+	bool GetIsDodgeDashing();
+
 private:
 	AFingerGun* EquippedFingerGun;
 
@@ -193,6 +203,8 @@ private:
 	bool bIsZTargetLockedOn;
 
 	int AnimMontageMeleeSectionNum;
+	
+	bool IsDodgeDashing;
 
 	AEnemy* TargetLevitatingEnemy;
 

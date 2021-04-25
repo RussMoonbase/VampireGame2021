@@ -273,7 +273,7 @@ void AEnemy::CapsuleFollowRagdoll()
 {
 	if (GetMesh() && CapsuleComp)
 	{
-		FVector newCapsuleLocation = GetMesh()->GetSocketLocation(FName("Hips"));
+		FVector newCapsuleLocation = GetMesh()->GetSocketLocation(FName("Root"));
 		newCapsuleLocation.Z = newCapsuleLocation.Z + 89.132126f;
 		CapsuleComp->SetWorldLocation(newCapsuleLocation);
 	}
