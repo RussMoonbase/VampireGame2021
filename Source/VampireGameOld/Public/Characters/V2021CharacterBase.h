@@ -62,6 +62,8 @@ public:
 	void StopShoot();
 	void ActivateTargetingSystem();
 	void DodgeButtonDown();
+	void DPadUpPressed();
+	void DPadLeftPressed();
 
    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Anims")
    UAnimMontage* MeleeMontage;
@@ -141,6 +143,9 @@ public:
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
    FName SoulMuzzleSocket;
 
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
+   FName SoulShieldSocket1;
+
 	// soul sphere meshes
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
 	UStaticMeshComponent* SoulSphereMeshComp1;
@@ -215,4 +220,6 @@ private:
 	void CameraLockOn();
 
 	int EnemyCount;
+
+	int FlingAttackNumber;
 };

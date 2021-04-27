@@ -7,6 +7,7 @@
 #include "SoulGun.generated.h"
 
 class AShotOutRagdollEnemyBase;
+class USkeletalMeshComponent;
 
 UCLASS()
 class VAMPIREGAMEOLD_API ASoulGun : public AActor
@@ -32,6 +33,9 @@ public:
 
 	UFUNCTION()
 	void FireSpawnedRagdollBullet(FVector targetVector, FTransform socketLocation);
+
+	UFUNCTION()
+	void TurnOnRagdollShield(USkeletalMeshComponent* SkeletalMeshComp, FName SocketName);
 
 protected:
 	// Called when the game starts or when spawned

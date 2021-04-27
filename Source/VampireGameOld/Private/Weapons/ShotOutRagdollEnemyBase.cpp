@@ -32,8 +32,8 @@ void AShotOutRagdollEnemyBase::BeginPlay()
 	if (SkeletalMeshComp)
 	{
 		//SkeletalMeshComp->SetCollisionProfileName(TEXT("ShotRagdoll"));
-      SkeletalMeshComp->SetAllBodiesBelowSimulatePhysics(FName("Hips"), true);
-      SkeletalMeshComp->SetAllBodiesBelowPhysicsBlendWeight(FName("Hips"), 1);
+      SkeletalMeshComp->SetAllBodiesBelowSimulatePhysics(FName("Root"), true);
+      SkeletalMeshComp->SetAllBodiesBelowPhysicsBlendWeight(FName("Root"), 1);
 	}
 	
 	bHitSucceeded = false;
@@ -56,6 +56,22 @@ void AShotOutRagdollEnemyBase::FlingRadgoll(FVector ShootVector)
 	//{
 	//	SphereComp->AddForce(ShootVector * ShotSpeed * SphereComp->GetMass());
 	//}
+}
+
+void AShotOutRagdollEnemyBase::RagdollShield()
+{
+	if (SkeletalMeshComp)
+	{
+		SkeletalMeshComp->SetSimulatePhysics(false);
+      SkeletalMeshComp->SetAllBodiesBelowSimulatePhysics(FName("UpperArm_L"), true);
+      SkeletalMeshComp->SetAllBodiesBelowPhysicsBlendWeight(FName("UpperArm_L"), 1);
+      SkeletalMeshComp->SetAllBodiesBelowSimulatePhysics(FName("UpperArm_R"), true);
+      SkeletalMeshComp->SetAllBodiesBelowPhysicsBlendWeight(FName("UpperArm_R"), 1);
+      SkeletalMeshComp->SetAllBodiesBelowSimulatePhysics(FName("Thigh_L"), true);
+      SkeletalMeshComp->SetAllBodiesBelowPhysicsBlendWeight(FName("Thigh_L"), 1);
+      SkeletalMeshComp->SetAllBodiesBelowSimulatePhysics(FName("Thigh_R"), true);
+      SkeletalMeshComp->SetAllBodiesBelowPhysicsBlendWeight(FName("Thigh_R"), 1);
+	}
 }
 
 void AShotOutRagdollEnemyBase::AddDamage(AActor* OtherActor)

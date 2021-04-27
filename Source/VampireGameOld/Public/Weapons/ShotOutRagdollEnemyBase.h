@@ -45,6 +45,9 @@ public:
 	UFUNCTION()
 	void FlingRadgoll(FVector ShootVector);
 
+	UFUNCTION()
+	void RagdollShield();
+
 	UFUNCTION(BlueprintCallable)
 	void AddDamage(AActor* OtherActor);
 

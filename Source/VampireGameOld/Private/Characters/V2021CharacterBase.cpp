@@ -96,6 +96,9 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
    PlayerInputComponent->BindAction(TEXT("ZTargeting"), IE_Pressed, this, &AV2021CharacterBase::ActivateTargetingSystem);
 
    PlayerInputComponent->BindAction(TEXT("Dodge"), IE_Pressed, this, &AV2021CharacterBase::DodgeButtonDown);
+
+   PlayerInputComponent->BindAction(TEXT("DPadUp"), IE_Pressed, this, &AV2021CharacterBase::DPadUpPressed);
+   PlayerInputComponent->BindAction(TEXT("DPadLeft"), IE_Pressed, this, &AV2021CharacterBase::DPadLeftPressed);
 }
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
@@ -260,59 +263,54 @@ void AV2021CharacterBase::FlingAttackButtonDown()
       AnimInstance->Montage_JumpToSection(FName("Throw"), PickUpMontage);
    }
 
-   //FVector PlayerForwardVector = GetActorForwardVector();
-   FVector TargetVector = FVector::ZeroVector;
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Fling Attack Number = %i"), FlingAttackNumber));
 
-
-
-   if (EnemyCount > 0)
+   if (FlingAttackNumber == 1)
    {
-      if (LockedOnEnemy)
-      {
-         TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
-         TargetVector.Normalize();
-      }
-      else
-      {
-         TargetVector = GetActorForwardVector();
-      }
+      D("Fling Attack is #1");
+      //FVector PlayerForwardVector = GetActorForwardVector();
+      FVector TargetVector = FVector::ZeroVector;
 
-      if (EquippedSoulGun)
+      if (EnemyCount > 0)
       {
-         EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector, GetMesh()->GetSocketTransform(SoulMuzzleSocket));
-      }
+         if (LockedOnEnemy)
+         {
+            TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
+            TargetVector.Normalize();
+         }
+         else
+         {
+            TargetVector = GetActorForwardVector();
+         }
 
-      DeactivateSoulSphere(EnemyCount);
-      --EnemyCount;
+         if (EquippedSoulGun)
+         {
+            EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector, GetMesh()->GetSocketTransform(SoulMuzzleSocket));
+         }
 
-      if (TargetingSystemComp)
-      {
-         TargetingSystemComp->TurnOffLockOnTarget();
-         TurnOffLockedOnCamera();
+         DeactivateSoulSphere(EnemyCount);
+         --EnemyCount;
+
+         if (TargetingSystemComp)
+         {
+            TargetingSystemComp->TurnOffLockOnTarget();
+            TurnOffLockedOnCamera();
+         }
       }
    }
-   
-   //if (TargetPickUpEnemies.Num() > 0)
-   //{
-   //   int i = TargetPickUpEnemies.Num() - 1;
-   //   //UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
-   //   if (TargetPickUpEnemies[i])
-   //   {
-   //      if (LockedOnEnemy)
-   //      {
-   //         TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
-   //         TargetVector.Normalize();
-   //      }
+   else if (FlingAttackNumber == 2)
+   {
+      D("Fling Attack is #2");
+      if (EnemyCount > 0)
+      {
+         if (EquippedSoulGun)
+         {
+            D("Ragdoll shoot turned on");
+            //EquippedSoulGun->TurnOnRagdollShield(GetMesh(), SoulShieldSocket1);
+         }
+      }
+   }
 
-   //      //TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
-   //      //TargetPickUpEnemies[i]->FlingDownedEnemy(TargetVector);
-   //      if (EquippedSoulGun)
-   //      {
-   //         EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
-   //      }
-   //      TargetPickUpEnemies.RemoveAt(i);
-   //   }
-   //}
 }
 
 void AV2021CharacterBase::ThrowAttackButtonDown()
@@ -379,6 +377,20 @@ void AV2021CharacterBase::DodgeButtonDown()
          AnimInstance->Montage_JumpToSection(FName("ForwardDash"), DodgeDashMontage);
       }
    }
+}
+
+void AV2021CharacterBase::DPadUpPressed()
+{
+   D("D Pad Up Pressed");
+   FlingAttackNumber = 1;
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Fling Attack Number = %i"), FlingAttackNumber));
+}
+
+void AV2021CharacterBase::DPadLeftPressed()
+{
+   D("D Pad Left Pressed");
+   FlingAttackNumber = 2;
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Fling Attack Number = %i"), FlingAttackNumber));
 }
 
 AFingerGun* AV2021CharacterBase::GetEquippedFingerGun()

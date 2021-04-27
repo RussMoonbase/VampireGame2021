@@ -4,6 +4,7 @@
 #include "Weapons/SoulGun.h"
 #include "Components/ArrowComponent.h"
 #include "Weapons/ShotOutRagdollEnemyBase.h"
+#include "Components/SkeletalMeshComponent.h"
 
 // Sets default values
 ASoulGun::ASoulGun()
@@ -51,4 +52,21 @@ void ASoulGun::FireSpawnedRagdollBullet(FVector targetVector, FTransform socketL
 	}
 }
 
+void ASoulGun::TurnOnRagdollShield(USkeletalMeshComponent* SkeletalMeshComp, FName SocketName)
+{
+   const FTransform SpawnTransform = GunMuzzleArrow->GetComponentTransform();
+
+   FActorSpawnParameters Params;
+   Params.Owner = GetOwner();
+   Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+   AShotOutRagdollEnemyBase* RagdollShieldItem = GetWorld()->SpawnActor<AShotOutRagdollEnemyBase>(SpawnRagdoll, SpawnTransform, Params);
+
+   if (RagdollShieldItem)
+   {
+      RagdollShieldItem->RagdollShield();
+      RagdollShieldItem->AttachToComponent(SkeletalMeshComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+   }
+
+}
 
