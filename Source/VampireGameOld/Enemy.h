@@ -77,7 +77,13 @@ public:
 	void RightSideHit();
 
    UFUNCTION(BlueprintCallable, Category = "Hit Box")
+   void LeftSideHit();
+
+   UFUNCTION(BlueprintCallable, Category = "Hit Box")
    void FrontStomachHit();
+
+   UFUNCTION(BlueprintCallable, Category = "Hit Box")
+   void BackHit();
 
    UFUNCTION(BlueprintCallable, Category = "Hit Box")
    void TopHeadHit();

@@ -181,6 +181,17 @@ void AEnemy::RightSideHit()
 	}
 }
 
+void AEnemy::LeftSideHit()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && HitMontage)
+   {
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactFromLeft"), HitMontage);
+   }
+}
+
 void AEnemy::FrontStomachHit()
 {
    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -189,6 +200,17 @@ void AEnemy::FrontStomachHit()
    {
       AnimInstance->Montage_Play(HitMontage, 1.25f);
       AnimInstance->Montage_JumpToSection(FName("ReactFromFront"), HitMontage);
+   }
+}
+
+void AEnemy::BackHit()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && HitMontage)
+   {
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactFromBack"), HitMontage);
    }
 }
 
