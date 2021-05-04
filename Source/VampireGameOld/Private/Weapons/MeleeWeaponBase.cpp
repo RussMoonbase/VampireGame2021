@@ -5,6 +5,9 @@
 #include "Components/BoxComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/DamageType.h"
+#include "Math/Vector.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/Character.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
@@ -33,7 +36,42 @@ void AMeleeWeaponBase::OnOverlapImpact(UPrimitiveComponent* OverlappedComponent,
       return;
    }
 
-   D("Hit by sword!");
+   D("Hit by sword");
+
+   //if (SweepResult.ImpactPoint == FVector::ZeroVector)
+   //{
+   //   D("Impact point is zero");
+   //}
+   if (HitParticleSystem)
+   {
+      UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticleSystem, GetActorLocation());
+   }
+
+   ACharacter* OtherCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0); // CHANGE THIS for testing only
+   //FVector PushBackVector = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorForwardVector();
+   //PushBackVector *= 100000.0f;
+   FVector PushBackVector = FVector(400.0f, 0.0f, 1500.0f);
+
+   if (OtherCharacter)
+   {
+      D("Launch character if statement entered");
+      OtherCharacter->LaunchCharacter(PushBackVector, false, false);
+   }
+
+
+   if (OtherActor->FindComponentByClass<UCapsuleComponent>())
+   {
+      D("Found Capsule Component");
+      //UCapsuleComponent* OpponentCapsule = OtherActor->FindComponentByClass<UCapsuleComponent>();
+
+      //OpponentCapsule->SetSimulatePhysics(true);
+
+     
+     // OpponentCapsule->AddForce(PushBackVector * 100.0f * OpponentCapsule->GetMass());
+      //OpponentCapsule->AddForce(-OtherActor->GetActorForwardVector() * 8000.0f);
+   }
+
+
    UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, GetOwner(), UDamageType::StaticClass());
    TurnOffCollision();
 }
