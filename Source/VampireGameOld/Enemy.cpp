@@ -11,6 +11,8 @@
 #include "Components/BoxComponent.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/DamageType.h"
+#include "Math/Vector.h"
+#include "Perception/AISense_Hearing.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
 // Sets default values
@@ -309,6 +311,14 @@ void AEnemy::RemoveFromScene()
 USkeletalMeshComponent* AEnemy::GetEnemySkeletalMesh()
 {
 	return GetMesh();
+}
+
+void AEnemy::TurnOnNoiseTracking(bool booleanValue)
+{
+	if (booleanValue)
+	{
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1.0f, this, 0.0f);
+	}
 }
 
 //void AEnemy::OnRagdollImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

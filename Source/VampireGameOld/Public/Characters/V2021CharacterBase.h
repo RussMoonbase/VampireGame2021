@@ -146,6 +146,9 @@ public:
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
    FName SoulShieldSocket1;
 
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Powers")
+   FName ZombieMuzzleSocket;
+
 	// soul sphere meshes
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Powers")
 	UStaticMeshComponent* SoulSphereMeshComp1;

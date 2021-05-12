@@ -11,6 +11,7 @@ class UWidgetComponent;
 //class UUserWidget;
 class UBoxComponent;
 class UAnimMontage;
+class UAISense_Hearing;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShotByPlayer);
 UCLASS()
@@ -117,6 +118,9 @@ public:
 
 	UFUNCTION()
 	USkeletalMeshComponent* GetEnemySkeletalMesh();
+
+	UFUNCTION()
+	void TurnOnNoiseTracking(bool booleanValue);
 
 private:
 	void FloatEnemy(float DeltaTime);

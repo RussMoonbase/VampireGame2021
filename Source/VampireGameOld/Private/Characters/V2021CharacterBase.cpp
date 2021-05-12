@@ -297,6 +297,14 @@ void AV2021CharacterBase::FlingAttackButtonDown()
             TurnOffLockedOnCamera();
          }
       }
+      else if (FlingAttackNumber == 2)
+      {
+         D("Fling Attack is #2");
+         if (EquippedSoulGun)
+         {
+            EquippedSoulGun->FireSpawnedZombieWeapon(GetMesh()->GetSocketTransform(ZombieMuzzleSocket));
+         }
+      }
    }
    else if (FlingAttackNumber == 2)
    {

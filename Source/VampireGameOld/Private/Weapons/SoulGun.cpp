@@ -5,6 +5,7 @@
 #include "Components/ArrowComponent.h"
 #include "Weapons/ShotOutRagdollEnemyBase.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Weapons/ZombieWeaponBase.h"
 
 // Sets default values
 ASoulGun::ASoulGun()
@@ -69,4 +70,16 @@ void ASoulGun::TurnOnRagdollShield(USkeletalMeshComponent* SkeletalMeshComp, FNa
    }
 
 }
+
+void ASoulGun::FireSpawnedZombieWeapon(FTransform SpawnSocket)
+{
+   const FTransform SpawnTransform = SpawnSocket;
+
+   FActorSpawnParameters Params;
+   Params.Owner = GetOwner();
+   Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+   AZombieWeaponBase* ZombieBullet = GetWorld()->SpawnActor<AZombieWeaponBase>(SpawnZombieBullet, SpawnTransform, Params);
+}
+
 

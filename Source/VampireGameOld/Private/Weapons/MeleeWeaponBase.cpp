@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 
+
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Yellow, TEXT(x));}
 
 AMeleeWeaponBase::AMeleeWeaponBase()
@@ -26,6 +27,7 @@ void AMeleeWeaponBase::BeginPlay()
    //DamageBox->OnComponentHit.AddDynamic(this, &AMeleeWeaponBase::OnHit);
    DamageBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
    DamageBox->OnComponentBeginOverlap.AddDynamic(this, &AMeleeWeaponBase::OnOverlapImpact);
+   //DamageBox->OnComponentBeginOverlap.AddDynamic(this, &AMeleeWeaponBase::OnOverlapImpactEnd);
    //DamageBox->OnComponentEndOverlap
 }
 
@@ -38,39 +40,22 @@ void AMeleeWeaponBase::OnOverlapImpact(UPrimitiveComponent* OverlappedComponent,
 
    D("Hit by sword");
 
-   //if (SweepResult.ImpactPoint == FVector::ZeroVector)
-   //{
-   //   D("Impact point is zero");
-   //}
    if (HitParticleSystem)
    {
       UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), HitParticleSystem, GetActorLocation());
    }
 
-   ACharacter* OtherCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0); // CHANGE THIS for testing only
-   //FVector PushBackVector = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorForwardVector();
-   //PushBackVector *= 100000.0f;
-   FVector PushBackVector = FVector(400.0f, 0.0f, 1500.0f);
+   UCapsuleComponent* HitCapsule = OtherActor->FindComponentByClass<UCapsuleComponent>();
+   ACharacter* PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+   FVector HitVector = OtherActor->GetActorLocation() - PlayerCharacter->GetActorLocation();
+   HitVector.Z = 0.0f;
 
-   if (OtherCharacter)
-   {
-      D("Launch character if statement entered");
-      OtherCharacter->LaunchCharacter(PushBackVector, false, false);
-   }
-
-
-   if (OtherActor->FindComponentByClass<UCapsuleComponent>())
-   {
-      D("Found Capsule Component");
-      //UCapsuleComponent* OpponentCapsule = OtherActor->FindComponentByClass<UCapsuleComponent>();
-
-      //OpponentCapsule->SetSimulatePhysics(true);
-
-     
-     // OpponentCapsule->AddForce(PushBackVector * 100.0f * OpponentCapsule->GetMass());
-      //OpponentCapsule->AddForce(-OtherActor->GetActorForwardVector() * 8000.0f);
-   }
-
+   //if (HitCapsule)
+   //{
+   //   D("Hit Capsule FOUND");
+   //   HitCapsule->SetSimulatePhysics(true);
+   //   HitCapsule->AddForce(HitVector * 150.0f * HitCapsule->GetMass());
+   //}
 
    UGameplayStatics::ApplyDamage(OtherActor, Damage, nullptr, GetOwner(), UDamageType::StaticClass());
    TurnOffCollision();
@@ -78,7 +63,12 @@ void AMeleeWeaponBase::OnOverlapImpact(UPrimitiveComponent* OverlappedComponent,
 
 void AMeleeWeaponBase::OnOverlapImpactEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-
+   UCapsuleComponent* HitCapsule = OtherActor->FindComponentByClass<UCapsuleComponent>();
+   if (HitCapsule)
+   {
+      D("Hit Capsule FOUND in Overlap End");
+      HitCapsule->SetSimulatePhysics(false);
+   }
 }
 
 void AMeleeWeaponBase::TurnOnCollision()
