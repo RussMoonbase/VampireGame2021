@@ -9,6 +9,7 @@
 class AShotOutRagdollEnemyBase;
 class USkeletalMeshComponent;
 class AZombieWeaponBase;
+class AEnemy;
 
 UCLASS()
 class VAMPIREGAMEOLD_API ASoulGun : public AActor
@@ -42,7 +43,7 @@ public:
 	void TurnOnRagdollShield(USkeletalMeshComponent* SkeletalMeshComp, FName SocketName);
 
 	UFUNCTION()
-	void FireSpawnedZombieWeapon(FTransform SpawnSocket);
+	void FireSpawnedZombieWeapon(FTransform SpawnSocket, AEnemy* theLockedOnEnemy);
 
 protected:
 	// Called when the game starts or when spawned

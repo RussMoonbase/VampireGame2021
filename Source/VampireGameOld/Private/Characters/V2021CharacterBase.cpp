@@ -297,25 +297,13 @@ void AV2021CharacterBase::FlingAttackButtonDown()
             TurnOffLockedOnCamera();
          }
       }
-      else if (FlingAttackNumber == 2)
-      {
-         D("Fling Attack is #2");
-         if (EquippedSoulGun)
-         {
-            EquippedSoulGun->FireSpawnedZombieWeapon(GetMesh()->GetSocketTransform(ZombieMuzzleSocket));
-         }
-      }
    }
    else if (FlingAttackNumber == 2)
    {
       D("Fling Attack is #2");
-      if (EnemyCount > 0)
+      if (EquippedSoulGun && LockedOnEnemy)
       {
-         if (EquippedSoulGun)
-         {
-            D("Ragdoll shoot turned on");
-            //EquippedSoulGun->TurnOnRagdollShield(GetMesh(), SoulShieldSocket1);
-         }
+         EquippedSoulGun->FireSpawnedZombieWeapon(GetMesh()->GetSocketTransform(ZombieMuzzleSocket), LockedOnEnemy);
       }
    }
 

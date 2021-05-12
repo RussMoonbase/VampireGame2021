@@ -125,7 +125,7 @@ void UZTargetingSystem::LockOnTarget()
    if (lockedTargetEnemy)
    {
       lockedTargetEnemy->SetTargetDotVisibility(true);
-      lockedTargetEnemy->TurnOnNoiseTracking(true);
+      //lockedTargetEnemy->TurnOnNoiseTracking(true);
    }
 
    if (PlayerCharacter)

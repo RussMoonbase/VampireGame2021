@@ -2,6 +2,7 @@
 
 
 #include "Weapons/ZombieWeaponBase.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AZombieWeaponBase::AZombieWeaponBase()
@@ -30,5 +31,15 @@ void AZombieWeaponBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void AZombieWeaponBase::AddDamage(AActor* OtherActor)
+{
+	if (!OtherActor)
+	{
+		return;
+	}
+
+	UGameplayStatics::ApplyDamage(OtherActor, 300.0f, nullptr, GetOwner(), UDamageType::StaticClass());
 }
 

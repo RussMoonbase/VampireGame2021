@@ -6,6 +6,7 @@
 #include "Weapons/ShotOutRagdollEnemyBase.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Weapons/ZombieWeaponBase.h"
+#include "VampireGameOld/Enemy.h"
 
 // Sets default values
 ASoulGun::ASoulGun()
@@ -71,7 +72,7 @@ void ASoulGun::TurnOnRagdollShield(USkeletalMeshComponent* SkeletalMeshComp, FNa
 
 }
 
-void ASoulGun::FireSpawnedZombieWeapon(FTransform SpawnSocket)
+void ASoulGun::FireSpawnedZombieWeapon(FTransform SpawnSocket, AEnemy* theLockedOnEnemy)
 {
    const FTransform SpawnTransform = SpawnSocket;
 
@@ -80,6 +81,11 @@ void ASoulGun::FireSpawnedZombieWeapon(FTransform SpawnSocket)
    Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
    AZombieWeaponBase* ZombieBullet = GetWorld()->SpawnActor<AZombieWeaponBase>(SpawnZombieBullet, SpawnTransform, Params);
+
+   if (theLockedOnEnemy)
+   {
+      theLockedOnEnemy->TurnOnNoiseTracking(true);
+   }
 }
 
 

@@ -317,6 +317,7 @@ void AEnemy::TurnOnNoiseTracking(bool booleanValue)
 {
 	if (booleanValue)
 	{
+		D("NOISE ADDED");
 		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1.0f, this, 0.0f);
 	}
 }
