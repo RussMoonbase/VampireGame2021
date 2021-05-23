@@ -3,6 +3,9 @@
 
 #include "Weapons/ZombieWeaponBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "VampireGameOld/Enemy.h"
+#include "Components/CapsuleComponent.h"
+#include "AIController.h"
 
 // Sets default values
 AZombieWeaponBase::AZombieWeaponBase()
@@ -16,6 +19,8 @@ AZombieWeaponBase::AZombieWeaponBase()
 void AZombieWeaponBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	CapsuleComp = GetCapsuleComponent();
 	
 }
 
@@ -40,6 +45,41 @@ void AZombieWeaponBase::AddDamage(AActor* OtherActor)
 		return;
 	}
 
-	UGameplayStatics::ApplyDamage(OtherActor, 300.0f, nullptr, GetOwner(), UDamageType::StaticClass());
+   AEnemy* TheEnemy = Cast<AEnemy>(OtherActor);
+   USkeletalMeshComponent* EnemySkeletalMeshComp = nullptr;
+
+   if (TheEnemy)
+   {
+      EnemySkeletalMeshComp = TheEnemy->GetEnemySkeletalMesh();
+   }
+	UGameplayStatics::ApplyDamage(this, DamageAmount, nullptr, GetOwner(), UDamageType::StaticClass());
+	UGameplayStatics::ApplyDamage(OtherActor, DamageAmount, nullptr, GetOwner(), UDamageType::StaticClass());
+
+	if (EnemySkeletalMeshComp)
+	{
+		EnemySkeletalMeshComp->AddRadialImpulse(GetActorLocation(), 300.0f, 150.0f, ERadialImpulseFalloff::RIF_Constant, true);
+	}
+
+}
+
+void AZombieWeaponBase::RagdollDeath()
+{
+	AAIController* theAIController = Cast<AAIController>(GetController());
+
+	if (theAIController)
+	{
+		theAIController->UnPossess();
+	}
+
+   GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+   GetMesh()->SetAllBodiesBelowSimulatePhysics(FName("Root"), true);
+   GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(FName("Root"), 1);
+
+	GetMesh()->AddRadialImpulse(GetActorLocation(), 300.0f, 150.0f, ERadialImpulseFalloff::RIF_Constant, true);
+
+   if (CapsuleComp)
+   {
+      CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+   }
 }
 

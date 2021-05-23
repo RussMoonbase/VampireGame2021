@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "ZombieWeaponBase.generated.h"
 
+
+
 UCLASS()
 class VAMPIREGAMEOLD_API AZombieWeaponBase : public ACharacter
 {
@@ -28,5 +30,14 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddDamage(AActor* OtherActor);
+
+	UFUNCTION(BlueprintCallable)
+	void RagdollDeath();
+
+	UPROPERTY(EditAnywhere)
+	float DamageAmount = 300.0f;
+
+	UPROPERTY()
+	UCapsuleComponent* CapsuleComp;
 
 };
