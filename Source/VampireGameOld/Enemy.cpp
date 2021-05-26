@@ -13,6 +13,7 @@
 #include "GameFramework/DamageType.h"
 #include "Math/Vector.h"
 #include "Perception/AISense_Hearing.h"
+#include "Components/SphereComponent.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
 // Sets default values
@@ -26,6 +27,14 @@ AEnemy::AEnemy()
 
 	TargetWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("TargetDotComp"));
 	TargetWidgetComp->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+	DamageSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DamageSphere"));
+
+	if (GetMesh())
+	{
+		DamageSphere->SetupAttachment(GetMesh());
+	}
+	DamageSphere->SetNotifyRigidBodyCollision(true);
 }
 
 // Called when the game starts or when spawned
@@ -45,7 +54,7 @@ void AEnemy::BeginPlay()
 	// turn off target dot widget
 	TargetWidgetComp->SetVisibility(false);
 
-	//GetMesh()->OnComponentHit.AddDynamic(this, &AEnemy::OnRagdollImpact);
+	DamageSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called every frame

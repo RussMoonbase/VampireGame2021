@@ -12,6 +12,7 @@ class UWidgetComponent;
 class UBoxComponent;
 class UAnimMontage;
 class UAISense_Hearing;
+class USphereComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShotByPlayer);
 UCLASS()
@@ -36,6 +37,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* CapsuleComp;
+
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Melee Attack")
+   USphereComponent* DamageSphere;
 
 	UFUNCTION()
 	void ActivateLevitate();
