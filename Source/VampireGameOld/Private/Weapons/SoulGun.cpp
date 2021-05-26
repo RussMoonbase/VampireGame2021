@@ -4,6 +4,9 @@
 #include "Weapons/SoulGun.h"
 #include "Components/ArrowComponent.h"
 #include "Weapons/ShotOutRagdollEnemyBase.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Weapons/ZombieWeaponBase.h"
+#include "VampireGameOld/Enemy.h"
 
 // Sets default values
 ASoulGun::ASoulGun()
@@ -35,9 +38,9 @@ void ASoulGun::Tick(float DeltaTime)
 
 }
 
-void ASoulGun::FireSpawnedRagdollBullet(FVector targetVector)
+void ASoulGun::FireSpawnedRagdollBullet(FVector targetVector, FTransform socketLocation)
 {
-	const FTransform SpawnTransform = GunMuzzleArrow->GetComponentTransform();
+   const FTransform SpawnTransform = GunMuzzleArrow->GetComponentTransform();
 
    FActorSpawnParameters Params;
    Params.Owner = GetOwner();
@@ -49,6 +52,40 @@ void ASoulGun::FireSpawnedRagdollBullet(FVector targetVector)
 	{
 		RagdollBullet->FlingRadgoll(targetVector);
 	}
+}
+
+void ASoulGun::TurnOnRagdollShield(USkeletalMeshComponent* SkeletalMeshComp, FName SocketName)
+{
+   const FTransform SpawnTransform = GunMuzzleArrow->GetComponentTransform();
+
+   FActorSpawnParameters Params;
+   Params.Owner = GetOwner();
+   Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+   AShotOutRagdollEnemyBase* RagdollShieldItem = GetWorld()->SpawnActor<AShotOutRagdollEnemyBase>(SpawnRagdoll, SpawnTransform, Params);
+
+   if (RagdollShieldItem)
+   {
+      RagdollShieldItem->RagdollShield();
+      RagdollShieldItem->AttachToComponent(SkeletalMeshComp, FAttachmentTransformRules::SnapToTargetNotIncludingScale, SocketName);
+   }
+
+}
+
+void ASoulGun::FireSpawnedZombieWeapon(FTransform SpawnSocket, AEnemy* theLockedOnEnemy)
+{
+   const FTransform SpawnTransform = SpawnSocket;
+
+   FActorSpawnParameters Params;
+   Params.Owner = GetOwner();
+   Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+   AZombieWeaponBase* ZombieBullet = GetWorld()->SpawnActor<AZombieWeaponBase>(SpawnZombieBullet, SpawnTransform, Params);
+
+   if (theLockedOnEnemy)
+   {
+      theLockedOnEnemy->TurnOnNoiseTracking(true);
+   }
 }
 
 

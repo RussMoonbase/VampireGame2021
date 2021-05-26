@@ -7,6 +7,7 @@
 #include "MeleeWeaponBase.generated.h"
 
 class UBoxComponent;
+class UParticleSystem;
 
 UCLASS()
 class VAMPIREGAMEOLD_API AMeleeWeaponBase : public AWeaponBase
@@ -43,4 +44,7 @@ public:
 
 	UFUNCTION()
 	void ThrowSword(FVector direction);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "FX")
+	UParticleSystem* HitParticleSystem;
 };

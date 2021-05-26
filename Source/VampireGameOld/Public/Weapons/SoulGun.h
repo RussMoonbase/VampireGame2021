@@ -7,6 +7,9 @@
 #include "SoulGun.generated.h"
 
 class AShotOutRagdollEnemyBase;
+class USkeletalMeshComponent;
+class AZombieWeaponBase;
+class AEnemy;
 
 UCLASS()
 class VAMPIREGAMEOLD_API ASoulGun : public AActor
@@ -27,11 +30,20 @@ public:
    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Soul Gun")
    TSubclassOf<AShotOutRagdollEnemyBase> SpawnRagdoll;
 
+   UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Soul Gun")
+   TSubclassOf<AZombieWeaponBase> SpawnZombieBullet;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Soul Gun")
 	float shootSpeed;
 
 	UFUNCTION()
-	void FireSpawnedRagdollBullet(FVector targetVector);
+	void FireSpawnedRagdollBullet(FVector targetVector, FTransform socketLocation);
+
+	UFUNCTION()
+	void TurnOnRagdollShield(USkeletalMeshComponent* SkeletalMeshComp, FName SocketName);
+
+	UFUNCTION()
+	void FireSpawnedZombieWeapon(FTransform SpawnSocket, AEnemy* theLockedOnEnemy);
 
 protected:
 	// Called when the game starts or when spawned

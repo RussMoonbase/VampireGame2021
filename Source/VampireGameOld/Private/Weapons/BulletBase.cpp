@@ -42,7 +42,8 @@ ABulletBase::ABulletBase()
 
 	ProjecticleMoveComp = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMove"));
 	ProjecticleMoveComp->InitialSpeed = 3000;
-	ProjecticleMoveComp->Velocity = FVector(1.0f, 0.0f, 0.0f);
+	//ProjecticleMoveComp->Velocity = FVector(1.0f, 0.0f, 0.0f);
+
 
 }
 
@@ -50,10 +51,12 @@ ABulletBase::ABulletBase()
 void ABulletBase::BeginPlay()
 {
 	Super::BeginPlay();
-
 	DamageSphere->OnComponentBeginOverlap.AddDynamic(this, &ABulletBase::OnOverlapImpact);
 
+
+
 	AV2021PlayerCharacter* PlayerCharacter = Cast<AV2021PlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	FVector LaunchVelocityVector(0.0f);
 
 	if (PlayerCharacter)
 	{
@@ -61,6 +64,29 @@ void ABulletBase::BeginPlay()
 		{
 			LockedOnEnemy = PlayerCharacter->GetLockedOnEnemy();
 		}
+
+		if (LockedOnEnemy)
+		{
+			bool bHasAimSolution = UGameplayStatics::SuggestProjectileVelocity_CustomArc
+			(
+				this,
+				LaunchVelocityVector,
+				PlayerCharacter->GetActorLocation(),
+				LockedOnEnemy->GetActorLocation(),
+				0.0f,
+				0.5f
+			);
+
+			if (bHasAimSolution)
+			{
+				ProjecticleMoveComp->Velocity = LaunchVelocityVector;
+			}
+			else
+			{
+				ProjecticleMoveComp->Velocity = FVector(1.0f, 0.0f, 0.0f);
+			}
+		}
+
 	}
 	else
 	{
@@ -125,4 +151,6 @@ void ABulletBase::SpawnMicroBombs()
 	}
 
 }
+
+
 

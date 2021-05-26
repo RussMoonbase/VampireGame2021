@@ -17,6 +17,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Player/HealthComponent.h"
 #include "Weapons/SoulGun.h"
+#include "Math/UnrealMathUtility.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, TEXT(x));}
 #define Enemy ECollisionChannel::ECC_GameTraceChannel1
@@ -59,6 +60,7 @@ void AV2021CharacterBase::BeginPlay()
    AnimMontageMeleeSectionNum = 1;
    bIsPickingUp = false;
    EnemyCount = 0;
+   IsDodgeDashing = false;
 }
 
 // Called every frame
@@ -92,6 +94,11 @@ void AV2021CharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInput
    PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Released, this, &AV2021CharacterBase::StopShoot);
 
    PlayerInputComponent->BindAction(TEXT("ZTargeting"), IE_Pressed, this, &AV2021CharacterBase::ActivateTargetingSystem);
+
+   PlayerInputComponent->BindAction(TEXT("Dodge"), IE_Pressed, this, &AV2021CharacterBase::DodgeButtonDown);
+
+   PlayerInputComponent->BindAction(TEXT("DPadUp"), IE_Pressed, this, &AV2021CharacterBase::DPadUpPressed);
+   PlayerInputComponent->BindAction(TEXT("DPadLeft"), IE_Pressed, this, &AV2021CharacterBase::DPadLeftPressed);
 }
 
 void AV2021CharacterBase::MoveForward(float AxisValue)
@@ -256,58 +263,50 @@ void AV2021CharacterBase::FlingAttackButtonDown()
       AnimInstance->Montage_JumpToSection(FName("Throw"), PickUpMontage);
    }
 
-   //FVector PlayerForwardVector = GetActorForwardVector();
-   FVector TargetVector = GetActorForwardVector();
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Fling Attack Number = %i"), FlingAttackNumber));
 
-
-
-   if (EnemyCount > 0)
+   if (FlingAttackNumber == 1)
    {
-      if (LockedOnEnemy)
-      {
-         TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
-         TargetVector.Normalize();
-      }
-      else
-      {
-         TargetVector = GetActorForwardVector();
-      }
+      D("Fling Attack is #1");
+      //FVector PlayerForwardVector = GetActorForwardVector();
+      FVector TargetVector = FVector::ZeroVector;
 
-      if (EquippedSoulGun)
+      if (EnemyCount > 0)
       {
-         EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
-      }
-      --EnemyCount;
-      DeactivateSoulSphere(EnemyCount);
+         if (LockedOnEnemy)
+         {
+            TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
+            TargetVector.Normalize();
+         }
+         else
+         {
+            TargetVector = GetActorForwardVector();
+         }
 
-      if (TargetingSystemComp)
-      {
-         TargetingSystemComp->TurnOffLockOnTarget();
-         TurnOffLockedOnCamera();
+         if (EquippedSoulGun)
+         {
+            EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector, GetMesh()->GetSocketTransform(SoulMuzzleSocket));
+         }
+
+         DeactivateSoulSphere(EnemyCount);
+         --EnemyCount;
+
+         if (TargetingSystemComp)
+         {
+            TargetingSystemComp->TurnOffLockOnTarget();
+            TurnOffLockedOnCamera();
+         }
       }
    }
-   
-   //if (TargetPickUpEnemies.Num() > 0)
-   //{
-   //   int i = TargetPickUpEnemies.Num() - 1;
-   //   //UE_LOG(LogTemp, Warning, TEXT("Index of TargetPickUp Enemies = %d"), i);
-   //   if (TargetPickUpEnemies[i])
-   //   {
-   //      if (LockedOnEnemy)
-   //      {
-   //         TargetVector = LockedOnEnemy->GetActorLocation() - GetMesh()->GetSocketLocation(SoulMuzzleSocket);
-   //         TargetVector.Normalize();
-   //      }
+   else if (FlingAttackNumber == 2)
+   {
+      D("Fling Attack is #2");
+      if (EquippedSoulGun && LockedOnEnemy)
+      {
+         EquippedSoulGun->FireSpawnedZombieWeapon(GetMesh()->GetSocketTransform(ZombieMuzzleSocket), LockedOnEnemy);
+      }
+   }
 
-   //      //TargetPickUpEnemies[i]->FlingDownedEnemy(PlayerForwardVector);
-   //      //TargetPickUpEnemies[i]->FlingDownedEnemy(TargetVector);
-   //      if (EquippedSoulGun)
-   //      {
-   //         EquippedSoulGun->FireSpawnedRagdollBullet(TargetVector);
-   //      }
-   //      TargetPickUpEnemies.RemoveAt(i);
-   //   }
-   //}
 }
 
 void AV2021CharacterBase::ThrowAttackButtonDown()
@@ -323,11 +322,13 @@ void AV2021CharacterBase::ThrowAttackButtonDown()
 void AV2021CharacterBase::StartShoot()
 {
    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+   D("Shoot Button Pressed");
 
    if (AnimInstance && ShootMontage)
    {
-      AnimInstance->Montage_Play(ShootMontage, 1.25f);
-      AnimInstance->Montage_JumpToSection(FName("Shoot_Arrow"), ShootMontage);
+      D("Shoot Montage Played");
+      AnimInstance->Montage_Play(ShootMontage, 0.85f);
+      AnimInstance->Montage_JumpToSection(FName("Blast"), ShootMontage);
    }
 
    //if (EquippedFingerGun)
@@ -358,6 +359,34 @@ void AV2021CharacterBase::ActivateTargetingSystem()
       }
 
    }
+}
+
+void AV2021CharacterBase::DodgeButtonDown()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (!IsDodgeDashing)
+   {
+      if (AnimInstance && DodgeDashMontage)
+      {
+         AnimInstance->Montage_Play(DodgeDashMontage, 1.15f);
+         AnimInstance->Montage_JumpToSection(FName("ForwardDash"), DodgeDashMontage);
+      }
+   }
+}
+
+void AV2021CharacterBase::DPadUpPressed()
+{
+   D("D Pad Up Pressed");
+   FlingAttackNumber = 1;
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Fling Attack Number = %i"), FlingAttackNumber));
+}
+
+void AV2021CharacterBase::DPadLeftPressed()
+{
+   D("D Pad Left Pressed");
+   FlingAttackNumber = 2;
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Fling Attack Number = %i"), FlingAttackNumber));
 }
 
 AFingerGun* AV2021CharacterBase::GetEquippedFingerGun()
@@ -527,6 +556,8 @@ void AV2021CharacterBase::CameraLockOn()
       FRotator NewCamRotation = UKismetMathLibrary::FindLookAtRotation(CamLocation, EnemyLocation);
       FRotator PitchRotation = UKismetMathLibrary::FindLookAtRotation(CamWorldLocation, EnemyWorldLocation);
       float rotatePitchValue = PitchRotation.Pitch;
+      rotatePitchValue = FMath::Clamp(rotatePitchValue, -30.0f, 30.0f);
+      //GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("rotate Pitch Value for lock on Camera = %f"), rotatePitchValue));
       NewCamRotation = FRotator(rotatePitchValue - 15.0f, NewCamRotation.Yaw, NewCamRotation.Roll);
       Controller->SetControlRotation(NewCamRotation);
    }
@@ -535,6 +566,7 @@ void AV2021CharacterBase::CameraLockOn()
 void AV2021CharacterBase::ActivateSoulSphere(int EnemyNumber)
 {
    D("Activate SOUL SPHERE!");
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("EnemyNumber in Activate = %i"), EnemyNumber));
 
    if (EnemyNumber == 1)
    {
@@ -564,6 +596,7 @@ void AV2021CharacterBase::ActivateSoulSphere(int EnemyNumber)
 void AV2021CharacterBase::DeactivateSoulSphere(int EnemyNumber)
 {
    D("Deactivate SOUL SPHERE!");
+   GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("EnemyNumber in Deactivate = %i"), EnemyNumber));
 
    if (EnemyNumber == 1)
    {
@@ -628,4 +661,16 @@ UCameraComponent* AV2021CharacterBase::GetPlayerCameraComponent()
 {
    return TheCameraComp;
 }
+
+void AV2021CharacterBase::SetIsDodgeDashing(bool booleanValue)
+{
+   IsDodgeDashing = booleanValue;
+}
+
+bool AV2021CharacterBase::GetIsDodgeDashing()
+{
+   return IsDodgeDashing;
+}
+
+
 

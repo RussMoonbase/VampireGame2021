@@ -7,6 +7,8 @@
 #include "Components/SphereComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "VampireGameOld/Enemy.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
 
@@ -89,14 +91,28 @@ void ABombBase::AddExplosiveForce()
       {
          if (theHitResult.GetActor())
          {
-            UCapsuleComponent* HitCapsuleComp = Cast<UCapsuleComponent>(theHitResult.GetActor()->GetRootComponent());
-
-            if (HitCapsuleComp)
+            //UCapsuleComponent* HitCapsuleComp = Cast<UCapsuleComponent>(theHitResult.GetActor()->GetRootComponent());
+            AEnemy* TheEnemy = Cast<AEnemy>(theHitResult.GetActor());
+            USkeletalMeshComponent* HitSkeletalMeshComp = nullptr;
+            if (TheEnemy)
             {
-               D("Hit actor mesh");
-               HitCapsuleComp->SetSimulatePhysics(true);
-               HitCapsuleComp->AddRadialImpulse(GetActorLocation(), 300.0f, 100.0f, ERadialImpulseFalloff::RIF_Constant, true);
+               HitSkeletalMeshComp = TheEnemy->GetEnemySkeletalMesh();
             }
+
+            UGameplayStatics::ApplyDamage(theHitResult.GetActor(), 25.0f, nullptr, GetOwner(), UDamageType::StaticClass());
+
+            if (HitSkeletalMeshComp)
+            {
+               HitSkeletalMeshComp->AddRadialImpulse(GetActorLocation(), 300.0f, 150.0f, ERadialImpulseFalloff::RIF_Constant, true);
+            }
+
+            //if (HitCapsuleComp)
+            //{
+            //   D("Hit actor mesh");
+            //   
+            //   HitCapsuleComp->SetSimulatePhysics(true);
+            //   HitCapsuleComp->AddRadialImpulse(GetActorLocation(), 300.0f, 100.0f, ERadialImpulseFalloff::RIF_Constant, true);
+            //}
          }
 
       }

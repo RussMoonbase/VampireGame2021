@@ -11,6 +11,9 @@
 #include "Components/BoxComponent.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/DamageType.h"
+#include "Math/Vector.h"
+#include "Perception/AISense_Hearing.h"
+#include "Components/SphereComponent.h"
 
 #define D(x) if(GEngine){GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Cyan , TEXT(x));}
 // Sets default values
@@ -24,6 +27,14 @@ AEnemy::AEnemy()
 
 	TargetWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("TargetDotComp"));
 	TargetWidgetComp->AttachToComponent(GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+	DamageSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DamageSphere"));
+
+	if (GetMesh())
+	{
+		DamageSphere->SetupAttachment(GetMesh());
+	}
+	DamageSphere->SetNotifyRigidBodyCollision(true);
 }
 
 // Called when the game starts or when spawned
@@ -43,7 +54,7 @@ void AEnemy::BeginPlay()
 	// turn off target dot widget
 	TargetWidgetComp->SetVisibility(false);
 
-	//GetMesh()->OnComponentHit.AddDynamic(this, &AEnemy::OnRagdollImpact);
+	DamageSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called every frame
@@ -181,6 +192,17 @@ void AEnemy::RightSideHit()
 	}
 }
 
+void AEnemy::LeftSideHit()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && HitMontage)
+   {
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactFromLeft"), HitMontage);
+   }
+}
+
 void AEnemy::FrontStomachHit()
 {
    UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -189,6 +211,17 @@ void AEnemy::FrontStomachHit()
    {
       AnimInstance->Montage_Play(HitMontage, 1.25f);
       AnimInstance->Montage_JumpToSection(FName("ReactFromFront"), HitMontage);
+   }
+}
+
+void AEnemy::BackHit()
+{
+   UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+   if (AnimInstance && HitMontage)
+   {
+      AnimInstance->Montage_Play(HitMontage, 1.25f);
+      AnimInstance->Montage_JumpToSection(FName("ReactFromBack"), HitMontage);
    }
 }
 
@@ -228,8 +261,8 @@ void AEnemy::RightLegHit()
 void AEnemy::DeathRagdoll()
 {
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
-	GetMesh()->SetAllBodiesBelowSimulatePhysics(FName("Hips"), true);
-	GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(FName("Hips"), 1);
+	GetMesh()->SetAllBodiesBelowSimulatePhysics(FName("Root"), true);
+	GetMesh()->SetAllBodiesBelowPhysicsBlendWeight(FName("Root"), 1);
 
 	if (CapsuleComp)
 	{
@@ -273,7 +306,7 @@ void AEnemy::CapsuleFollowRagdoll()
 {
 	if (GetMesh() && CapsuleComp)
 	{
-		FVector newCapsuleLocation = GetMesh()->GetSocketLocation(FName("Hips"));
+		FVector newCapsuleLocation = GetMesh()->GetSocketLocation(FName("Root"));
 		newCapsuleLocation.Z = newCapsuleLocation.Z + 89.132126f;
 		CapsuleComp->SetWorldLocation(newCapsuleLocation);
 	}
@@ -282,6 +315,20 @@ void AEnemy::CapsuleFollowRagdoll()
 void AEnemy::RemoveFromScene()
 {
 	Destroy();
+}
+
+USkeletalMeshComponent* AEnemy::GetEnemySkeletalMesh()
+{
+	return GetMesh();
+}
+
+void AEnemy::TurnOnNoiseTracking(bool booleanValue)
+{
+	if (booleanValue)
+	{
+		D("NOISE ADDED");
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1.0f, this, 0.0f);
+	}
 }
 
 //void AEnemy::OnRagdollImpact(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

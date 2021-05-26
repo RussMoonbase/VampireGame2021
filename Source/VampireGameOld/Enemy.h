@@ -11,6 +11,8 @@ class UWidgetComponent;
 //class UUserWidget;
 class UBoxComponent;
 class UAnimMontage;
+class UAISense_Hearing;
+class USphereComponent;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnShotByPlayer);
 UCLASS()
@@ -35,6 +37,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* CapsuleComp;
+
+   UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Melee Attack")
+   USphereComponent* DamageSphere;
 
 	UFUNCTION()
 	void ActivateLevitate();
@@ -77,7 +82,13 @@ public:
 	void RightSideHit();
 
    UFUNCTION(BlueprintCallable, Category = "Hit Box")
+   void LeftSideHit();
+
+   UFUNCTION(BlueprintCallable, Category = "Hit Box")
    void FrontStomachHit();
+
+   UFUNCTION(BlueprintCallable, Category = "Hit Box")
+   void BackHit();
 
    UFUNCTION(BlueprintCallable, Category = "Hit Box")
    void TopHeadHit();
@@ -108,6 +119,12 @@ public:
 
 	UFUNCTION()
 	void RemoveFromScene();
+
+	UFUNCTION()
+	USkeletalMeshComponent* GetEnemySkeletalMesh();
+
+	UFUNCTION()
+	void TurnOnNoiseTracking(bool booleanValue);
 
 private:
 	void FloatEnemy(float DeltaTime);
